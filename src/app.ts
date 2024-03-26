@@ -2,11 +2,11 @@
 // Set up database and express server
 import * as express from "express"
 import "reflect-metadata"
-import { Request, Response } from "express"
 import { myDataSource } from "./app-data-src"
+import 'module-alias/register'
 
 const app = express()
-const port = process.env.PORT || 3000;
+const port = 3000;
 app.use(express.json())
 
 const startServer = async () => {
@@ -24,27 +24,7 @@ const startServer = async () => {
 
 startServer();
 
-
 // ========================================================
 // Set up routes 
 import router from "./routes"
 app.use("/", router); 
-
-
-// app.get("/", (req: Request, res: Response) => {
-//   res.send("Express + TypeScript Server");
-// });
-
-// import { Bucket } from "./entities/"
-// import upload from "./services/multer"
-
-// app.post("/", upload.single('file'), async (req: Request, res: Response) => {
-//     console.log(req.body)
-
-//     const bucket = new Bucket()
-//     bucket.fileName = req.body.fileName
-    
-//     await myDataSource.manager.save(bucket)
-//     res.send("Completed!")
-// });
-  

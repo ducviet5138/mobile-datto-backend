@@ -7,5 +7,9 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "outDir": "./dist",
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["src/*"]
+        },
     }
 }

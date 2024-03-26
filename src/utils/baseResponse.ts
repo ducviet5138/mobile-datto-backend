@@ -3,7 +3,7 @@ export default class BaseResponse {
     message: string;
     data: any;
 
-    constructor(newSuccess: boolean, newMessage: string, newData: any) {
+    constructor(newSuccess: boolean, newMessage: string, newData: any = {}) {
         this.success = newSuccess;
         this.message = newMessage || '';
         this.data = newData || {};

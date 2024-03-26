@@ -12,6 +12,9 @@ const storage = multer.diskStorage({
 
         const entity = await myDataSource.manager.save(bucket);
         cb(null, entity._id.toHexString());
+
+        // Rename the file
+        file.filename = entity._id.toHexString();
     }
     });
 
