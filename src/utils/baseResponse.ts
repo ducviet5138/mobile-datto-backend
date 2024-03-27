@@ -1,7 +1,7 @@
-import { RET_CODE, RET_MSG } from "./returnCode";
+import { RET_CODE, RET_MSG } from './returnCode';
 
 export default class BaseResponse {
-    retCode: number
+    retCode: number;
     success: boolean;
     message: string;
     data: any;
@@ -21,7 +21,7 @@ export default class BaseResponse {
         return {
             success: this.success,
             message: this.message,
-            data: this.data
-        }
+            data: this.data,
+        };
     }
 }

@@ -1,4 +1,4 @@
-import { Entity, ObjectId, ObjectIdColumn, Column, JoinColumn } from 'typeorm';
+import { Entity, ObjectId, ObjectIdColumn, Column, JoinColumn, OneToOne } from 'typeorm';
 import { Profile } from './profile';
 
 @Entity()
@@ -15,7 +15,6 @@ export class Account {
     @Column()
     password: string;
 
-    @Column(() => Profile)
-    @JoinColumn()
-    profile: ObjectId;
+    @Column((type) => Profile)
+    profile: Profile;
 }

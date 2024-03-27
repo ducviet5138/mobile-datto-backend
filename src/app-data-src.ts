@@ -1,6 +1,5 @@
 import { DataSource } from 'typeorm';
 import { Account, Bucket, Calendar, Event, Fund, Group, Memory, Profile, Timeline } from './entities/';
-import dotenv from 'dotenv';
 
 export const myDataSource = new DataSource({
     type: 'mongodb',

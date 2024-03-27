@@ -13,10 +13,9 @@ export class Profile {
     @Column()
     dob: Date;
 
-    @OneToOne(() => Bucket)
-    @JoinColumn()
-    avatar: ObjectId;
+    @Column((type) => Bucket)
+    avatar: Bucket;
 
-    @OneToMany(() => Group, (group) => group._id)
+    @Column((type) => Group)
     groups: Group[];
 }

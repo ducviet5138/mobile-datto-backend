@@ -7,7 +7,6 @@
     "semi": true,
     "arrowParens": "always",
     "printWidth": 120,
-    "endOfLine": "lf",
     "tabWidth": 4,
     "useTabs": false
 }
