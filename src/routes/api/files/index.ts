@@ -45,7 +45,8 @@ router.post('/', upload.single('file'), async (req: Request, res: Response) => {
     }
 });
 
-// GET: /api/files
+
+// GET: /api/files/:id
 // Feat: Get all files
 router.get('/:id', async (req: Request, res: Response) => {
     try {
