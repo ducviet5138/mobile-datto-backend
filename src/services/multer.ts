@@ -1,6 +1,6 @@
 import * as multer from 'multer';
 import { Bucket } from '../entities';
-import { myDataSource } from "../app-data-src"
+import { myDataSource } from '../app-data-src';
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -15,9 +15,8 @@ const storage = multer.diskStorage({
 
         // Rename the file
         file.filename = entity._id.toHexString();
-    }
-    });
-
+    },
+});
 
 const upload = multer({ storage: storage });
 

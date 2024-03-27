@@ -1,22 +1,22 @@
-import { Entity, ObjectId, ObjectIdColumn, Column, JoinColumn, OneToOne, OneToMany } from "typeorm"
-import { Bucket } from "./bucket"
-import { Group } from "./group"
+import { Entity, ObjectId, ObjectIdColumn, Column, JoinColumn, OneToOne, OneToMany } from 'typeorm';
+import { Bucket } from './bucket';
+import { Group } from './group';
 
 @Entity()
 export class Profile {
     @ObjectIdColumn()
-    _id: ObjectId
+    _id: ObjectId;
 
     @Column()
-    fullName: string
+    fullName: string;
 
     @Column()
-    dob: Date
+    dob: Date;
 
     @OneToOne(() => Bucket)
     @JoinColumn()
-    avatar: ObjectId
+    avatar: ObjectId;
 
-    @OneToMany(() => Group, group => group._id)
-    groups: Group[]
+    @OneToMany(() => Group, (group) => group._id)
+    groups: Group[];
 }

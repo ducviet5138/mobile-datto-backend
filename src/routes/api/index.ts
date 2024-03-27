@@ -1,8 +1,8 @@
 import * as Express from 'express';
-import filesRoute from './files'
+import filesRoute from './files';
 
 const router = Express.Router();
 
-router.use("/files", filesRoute)
+router.use('/files', filesRoute);
 
-export default router
+export default router;

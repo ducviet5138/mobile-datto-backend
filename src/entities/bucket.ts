@@ -1,10 +1,10 @@
-import { Entity, ObjectId, ObjectIdColumn, Column } from "typeorm"
+import { Entity, ObjectId, ObjectIdColumn, Column } from 'typeorm';
 
 @Entity()
 export class Bucket {
     @ObjectIdColumn()
-    _id: ObjectId
+    _id: ObjectId;
 
     @Column()
-    fileName: string
+    fileName: string;
 }
