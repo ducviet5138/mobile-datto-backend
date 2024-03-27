@@ -10,7 +10,8 @@ router.use("/api", apiRoutes)
 
 // Undefined routes
 router.use("*", (req: Request, res: Response) => {
-    res.status(RET_CODE.NOT_FOUND).json(new BaseResponse(false, RET_MSG.NOT_FOUND));
+    const response = new BaseResponse(RET_CODE.NOT_FOUND, false, RET_MSG.NOT_FOUND);
+    res.status(response.getRetCode()).json(response.getResponse());
 });
 
 export default router

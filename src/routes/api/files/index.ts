@@ -16,7 +16,8 @@ const router = Express.Router();
 router.post("/", upload.single('file'), async (req: Request, res: Response) => {
     try {
         if (!req.file) {
-            res.status(RET_CODE.BAD_REQUEST).json(new BaseResponse(false, RET_MSG.BAD_REQUEST));
+            const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.BAD_REQUEST);
+            res.status(response.getRetCode()).json(response.getResponse());
             return;
         }
 
@@ -28,15 +29,19 @@ router.post("/", upload.single('file'), async (req: Request, res: Response) => {
         });
         
         if (!entity) {
-            res.status(RET_CODE.BAD_REQUEST).json(new BaseResponse(false, RET_MSG.BAD_REQUEST));
+            const response = new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);
+            res.status(response.getRetCode()).json(response.getResponse());
             return;
         }
 
-        res.status(RET_CODE.SUCCESS).json(new BaseResponse(true, RET_MSG.SUCCESS, {
+        const response = new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, {
             id: entity._id,
-        }));
+        });
+
+        res.status(response.getRetCode()).json(response.getResponse());
     } catch (_: any) {
-        res.status(RET_CODE.ERROR).json(new BaseResponse(false, RET_MSG.ERROR));
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.status(response.getRetCode()).json(response.getResponse());
     }
 });
 
@@ -53,7 +58,8 @@ router.get("/:id", async (req: Request, res: Response) => {
         });
         
         if (!entity) {
-            res.status(RET_CODE.BAD_REQUEST).json(new BaseResponse(false, RET_MSG.BAD_REQUEST));
+            const response = new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);
+            res.status(response.getRetCode()).json(response.getResponse());
             return;
         }
 
@@ -62,7 +68,8 @@ router.get("/:id", async (req: Request, res: Response) => {
         const readStream = createReadStream(`./my_bucket/${entity._id}`);
         readStream.pipe(res);
     } catch (_: any) {
-        res.status(RET_CODE.ERROR).json(new BaseResponse(false, RET_MSG.ERROR));
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.status(response.getRetCode()).json(response.getResponse());
     }
 });
 
@@ -79,7 +86,8 @@ router.delete("/:id", async (req: Request, res: Response) => {
         });
         
         if (!entity) {
-            res.status(RET_CODE.BAD_REQUEST).json(new BaseResponse(false, RET_MSG.BAD_REQUEST));
+            const response = new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);
+            res.status(response.getRetCode()).json(response.getResponse());
             return;
         }
 
@@ -90,10 +98,12 @@ router.delete("/:id", async (req: Request, res: Response) => {
 
         // Delete the file in storage
         await fs.unlink(`./my_bucket/${entity._id}`);
-
-        res.status(RET_CODE.SUCCESS).json(new BaseResponse(true, RET_MSG.SUCCESS));
+        
+        const response = new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS);
+        res.status(response.getRetCode()).json(response.getResponse());
     } catch (_: any) {
-        res.status(RET_CODE.ERROR).json(new BaseResponse(false, RET_MSG.ERROR));
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.status(response.getRetCode()).json(response.getResponse());
     }
 });
 
