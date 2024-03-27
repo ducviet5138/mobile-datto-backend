@@ -1,21 +1,21 @@
-import { Entity, ObjectId, ObjectIdColumn, Column, JoinColumn, OneToOne } from "typeorm"
-import { Account } from "./account"
+import { Entity, ObjectId, ObjectIdColumn, Column, JoinColumn, OneToOne } from 'typeorm';
+import { Account } from './account';
 
 @Entity()
 export class Fund {
     @ObjectIdColumn()
-    _id: ObjectId
+    _id: ObjectId;
 
     @OneToOne(() => Account)
     @JoinColumn()
-    paidBy: ObjectId
+    paidBy: ObjectId;
 
     @Column()
-    amount: number
+    amount: number;
 
     @Column()
-    info: string
+    info: string;
 
     @Column()
-    paidAt: Date
+    paidAt: Date;
 }

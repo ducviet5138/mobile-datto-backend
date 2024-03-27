@@ -1,20 +1,20 @@
-import { Timestamp } from "mongodb"
-import { Entity, ObjectId, ObjectIdColumn, Column } from "typeorm"
+import { Timestamp } from 'mongodb';
+import { Entity, ObjectId, ObjectIdColumn, Column } from 'typeorm';
 
 @Entity()
 export class Timeline {
     @ObjectIdColumn()
-    _id: ObjectId
+    _id: ObjectId;
 
     @Column()
-    name: string
+    name: string;
 
     @Column()
-    location: Object
+    location: object;
 
     @Column()
-    startTime: Date
+    startTime: Date;
 
     @Column()
-    duration: Timestamp
+    duration: Timestamp;
 }

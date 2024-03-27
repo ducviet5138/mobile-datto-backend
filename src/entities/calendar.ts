@@ -1,16 +1,16 @@
-import { Entity, ObjectId, ObjectIdColumn, Column, JoinColumn, OneToOne } from "typeorm"
-import { Account } from "./account"
+import { Entity, ObjectId, ObjectIdColumn, Column, JoinColumn, OneToOne } from 'typeorm';
+import { Account } from './account';
 
 @Entity()
 export class Calendar {
     @ObjectIdColumn()
-    _id: ObjectId
+    _id: ObjectId;
 
     @OneToOne(() => Account)
     @JoinColumn()
-    createdBy: ObjectId
+    createdBy: ObjectId;
 
     @Column()
-    time: Object
+    time: object;
     // { start: Datetime, end: Datetime }
 }

@@ -5,7 +5,7 @@ export const RET_CODE = {
     NOT_FOUND: 404,
     FORBIDDEN: 403,
     BAD_REQUEST: 400,
-}
+};
 
 export const RET_MSG = {
     SUCCESS: 'Success',
@@ -14,4 +14,4 @@ export const RET_MSG = {
     NOT_FOUND: 'Not found',
     FORBIDDEN: 'Forbidden',
     BAD_REQUEST: 'Bad request',
-}
+};

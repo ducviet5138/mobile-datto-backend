@@ -1,21 +1,21 @@
-import { Entity, ObjectId, ObjectIdColumn, Column, JoinColumn } from "typeorm"
-import { Profile } from "./profile"
+import { Entity, ObjectId, ObjectIdColumn, Column, JoinColumn } from 'typeorm';
+import { Profile } from './profile';
 
 @Entity()
 export class Account {
     @ObjectIdColumn()
-    _id: ObjectId
+    _id: ObjectId;
 
     @Column()
-    username: string
+    username: string;
 
     @Column()
-    email: string
+    email: string;
 
     @Column()
-    password: string
+    password: string;
 
     @Column(() => Profile)
     @JoinColumn()
-    profile: ObjectId
+    profile: ObjectId;
 }
