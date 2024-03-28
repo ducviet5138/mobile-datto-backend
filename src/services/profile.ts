@@ -3,10 +3,12 @@ import { Request } from 'express';
 import BaseResponse from '@/utils/baseResponse';
 import { RET_CODE, RET_MSG } from '@/utils/returnCode';
 import { ObjectId } from 'mongodb';
+import { MongoRepository } from 'typeorm';
+
 import { Profile } from '@/entities';
 
 class ProfileService {
-    repository: any;
+    repository: MongoRepository<Profile>;
 
     constructor() {
         this.repository = myDataSource.manager.getMongoRepository(Profile);
@@ -30,9 +32,9 @@ class ProfileService {
     async patch(req: Request) {
         try {
             const id = new ObjectId(req.params.id);
-            const { fullName, dob, avatar, groups } = req.body;
+            const { fullName, dob, avatar } = req.body;
 
-            const data = await this.repository.findOne(id);
+            const data = await this.repository.findOneBy({ _id: id });
 
             if (!data) {
                 return new BaseResponse(RET_CODE.NOT_FOUND, false, RET_MSG.NOT_FOUND);
@@ -41,7 +43,6 @@ class ProfileService {
             data.fullName = fullName || data.fullName;
             data.dob = new Date(dob || data.dob);
             data.avatar = avatar || data.avatar;
-            data.groups = groups || data.groups;
 
             await this.repository.save(data);
 

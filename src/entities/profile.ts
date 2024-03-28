@@ -1,6 +1,5 @@
-import { Entity, ObjectId, ObjectIdColumn, Column, ManyToOne, ManyToMany } from 'typeorm';
+import { Entity, ObjectId, ObjectIdColumn, Column } from 'typeorm';
 import { Bucket } from './bucket';
-import { Group } from './group';
 
 @Entity()
 export class Profile {

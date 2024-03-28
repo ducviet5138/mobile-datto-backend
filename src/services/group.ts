@@ -143,9 +143,11 @@ class GroupService {
         try {
             const accountId = new ObjectId(req.params.id);
 
-            const data = await this.repository.find({ members: {
-                $elemMatch: { _id: accountId }
-            } });
+            const data = await this.repository.find({
+                members: {
+                    $elemMatch: { _id: accountId },
+                },
+            });
 
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data);
         } catch (_: any) {

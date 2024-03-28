@@ -5,5 +5,6 @@ export * from './event';
 export * from './fund';
 export * from './group';
 export * from './memories';
+export * from './otp';
 export * from './profile';
 export * from './timeline';

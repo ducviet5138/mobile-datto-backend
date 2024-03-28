@@ -1,9 +1,10 @@
 import { myDataSource } from '@/app-data-src';
 import { ObjectId } from 'mongodb';
+import { MongoRepository } from 'typeorm';
 import { Bucket } from '@/entities';
 
 class BucketService {
-    repository: any;
+    repository: MongoRepository<Bucket>;
 
     constructor() {
         this.repository = myDataSource.manager.getMongoRepository(Bucket);
@@ -11,7 +12,7 @@ class BucketService {
 
     async getBucketObject(id: ObjectId) {
         try {
-            const data = await this.repository.findOne(id);
+            const data = await this.repository.findOneBy({ _id: id });
             return data;
         } catch (_: any) {
             return null;
