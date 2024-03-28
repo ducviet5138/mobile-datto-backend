@@ -30,4 +30,66 @@ router.get("/:id", async (req: Request, res: Response) => {
     }
 });
 
+// GET: /api/groups/:id/members
+// Feat: Get group members
+router.get("/:id/members", async (req: Request, res: Response) => {
+    try {
+        const response = await GroupService.getGroupMembers(req);
+        res.status(response.getRetCode()).json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.status(response.getRetCode()).json(response.getResponse());
+    }
+});
+
+// PATCH: /api/groups/:id
+// Feat: Update group information
+router.patch("/:id", async (req: Request, res: Response) => {
+    try {
+        const response = await GroupService.patch(req);
+        res.status(response.getRetCode()).json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.status(response.getRetCode()).json(response.getResponse());
+    }
+});
+
+// POST: /api/groups/:id/code-generation
+// Feat: Generate new invite code
+router.post("/:id/code-generation", async (req: Request, res: Response) => {
+    try {
+        const response = await GroupService.generateInviteCode(req);
+        res.status(response.getRetCode()).json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.status(response.getRetCode()).json(response.getResponse());
+    }
+});
+
+// POST /api/groups/join
+// Feat: Join group
+router.post("/join", async (req: Request, res: Response) => {
+    try {
+        console.log('Reached here')
+        const response = await GroupService.joinGroup(req);
+        res.status(response.getRetCode()).json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.status(response.getRetCode()).json(response.getResponse());
+    }
+});
+
+
+// GET /api/groups/accounts/:id
+// Feat: Get accounts's groups
+router.get("/accounts/:id", async (req: Request, res: Response) => {
+    try {
+        const response = await GroupService.getAccountsGroups(req);
+        res.status(response.getRetCode()).json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.status(response.getRetCode()).json(response.getResponse());
+    }
+});
+
 export default router;

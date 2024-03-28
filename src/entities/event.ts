@@ -1,4 +1,4 @@
-import { Entity, ObjectId, ObjectIdColumn, Column, OneToMany } from 'typeorm';
+import { Entity, ObjectId, ObjectIdColumn, Column } from 'typeorm';
 import { Calendar } from './calendar';
 import { Timeline } from './timeline';
 import { Fund } from './fund';
@@ -15,13 +15,13 @@ export class Event {
     time: object;
     // { start: Datetime, end: Datetime }
 
-    @OneToMany(() => Calendar, (calendar) => calendar._id)
+    @Column((type) => Calendar)
     calendars: Calendar[];
 
-    @OneToMany(() => Timeline, (timeline) => timeline._id)
+    @Column((type) => Timeline)
     timelines: Timeline[];
 
-    @OneToMany(() => Fund, (fund) => fund._id)
+    @Column((type) => Fund)
     funds: Fund[];
 
     @Column()

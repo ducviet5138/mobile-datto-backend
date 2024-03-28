@@ -108,6 +108,14 @@ class AccountService {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
     }
+
+    async getAccountById(id: ObjectId) {
+        try {
+            return await this.repository.findOneBy({ _id: id });
+        } catch (_: any) {
+            return null;
+        }
+    }
 }
 
 export default new AccountService();

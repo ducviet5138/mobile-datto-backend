@@ -1,8 +1,9 @@
-import { Entity, ObjectId, ObjectIdColumn, Column, JoinColumn, OneToOne, OneToMany } from 'typeorm';
+import { Entity, ObjectId, ObjectIdColumn, Column } from 'typeorm';
 import { Account } from './account';
 import { Bucket } from './bucket';
 import { Event } from './event';
 import { Memory } from './memories';
+import account from '@/services/account';
 
 @Entity()
 export class Group {
@@ -12,19 +13,18 @@ export class Group {
     @Column()
     name: string;
 
-    @OneToOne(() => Bucket)
-    @JoinColumn()
-    thumbnail: ObjectId;
+    @Column((type) => Bucket)
+    thumbnail: Bucket;
 
     @Column()
     inviteCode: string;
 
-    @OneToMany(() => Account, (account) => account._id)
+    @Column((type) => Account)
     members: Account[];
 
-    @OneToMany(() => Event, (event) => event._id)
+    @Column((type) => Event)
     events: Event[];
 
-    @OneToMany(() => Memory, (memory) => memory._id)
+    @Column((type) => Memory)
     memories: Memory[];
 }

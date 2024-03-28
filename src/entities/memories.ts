@@ -1,4 +1,4 @@
-import { Entity, ObjectId, ObjectIdColumn, Column, JoinColumn, OneToOne } from 'typeorm';
+import { Entity, ObjectId, ObjectIdColumn, Column } from 'typeorm';
 import { Event } from './event';
 import { Bucket } from './bucket';
 
@@ -7,13 +7,11 @@ export class Memory {
     @ObjectIdColumn()
     _id: ObjectId;
 
-    @OneToOne(() => Event)
-    @JoinColumn()
-    event: ObjectId;
+    @Column(() => Event)
+    event: Event;
 
-    @OneToOne(() => Bucket)
-    @JoinColumn()
-    thumbnail: ObjectId;
+    @Column(() => Bucket)
+    thumbnail: Bucket;
 
     @Column()
     info: string;

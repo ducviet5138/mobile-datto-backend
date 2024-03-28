@@ -1,4 +1,4 @@
-import { Entity, ObjectId, ObjectIdColumn, Column, JoinColumn, OneToOne, OneToMany } from 'typeorm';
+import { Entity, ObjectId, ObjectIdColumn, Column, ManyToOne, ManyToMany } from 'typeorm';
 import { Bucket } from './bucket';
 import { Group } from './group';
 
@@ -15,7 +15,4 @@ export class Profile {
 
     @Column((type) => Bucket)
     avatar: Bucket;
-
-    @Column((type) => Group)
-    groups: Group[];
 }
