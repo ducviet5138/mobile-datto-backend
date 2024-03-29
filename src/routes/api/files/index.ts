@@ -2,10 +2,9 @@ import * as Express from 'express';
 import { Request, Response } from 'express';
 import BaseResponse from '@/utils/baseResponse';
 import { RET_CODE, RET_MSG } from '@/utils/returnCode';
-import { myDataSource } from '@/app-data-src';
 import { Bucket } from '@/entities';
 import upload from '@/services/multer';
-import { ObjectId } from 'mongodb';
+import objectIdConverter from '@/utils/objectIdConverter';
 import { createReadStream } from 'fs';
 import * as fs from 'fs/promises';
 
@@ -24,9 +23,10 @@ router.post('/', upload.single('file'), async (req: Request, res: Response) => {
         const id = req.file.filename;
 
         // Check if id is valid
-        const entity = await myDataSource.manager.findOneBy(Bucket, {
-            _id: new ObjectId(id),
-        });
+        // const entity = await myDataSource.manager.findOneBy(Bucket, {
+        //     _id: new ObjectId(id),
+        // });
+        const entity = await Bucket.findById(objectIdConverter(id));
 
         if (!entity) {
             const response = new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);
@@ -53,9 +53,11 @@ router.get('/:id', async (req: Request, res: Response) => {
         const id = req.params.id;
 
         // Check if id is valid
-        const entity = await myDataSource.manager.findOneBy(Bucket, {
-            _id: new ObjectId(id),
-        });
+        // const entity = await myDataSource.manager.findOneBy(Bucket, {
+        //     _id: new ObjectId(id),
+        // });
+
+        const entity = await Bucket.findById(objectIdConverter(id));
 
         if (!entity) {
             const response = new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);
@@ -80,9 +82,11 @@ router.delete('/:id', async (req: Request, res: Response) => {
         const id = req.params.id;
 
         // Check if id is valid
-        const entity = await myDataSource.manager.findOneBy(Bucket, {
-            _id: new ObjectId(id),
-        });
+        // const entity = await myDataSource.manager.findOneBy(Bucket, {
+        //     _id: new ObjectId(id),
+        // });
+
+        const entity = await Bucket.findById(objectIdConverter(id));
 
         if (!entity) {
             const response = new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);
@@ -91,9 +95,10 @@ router.delete('/:id', async (req: Request, res: Response) => {
         }
 
         // Delete the file in database
-        await myDataSource.manager.delete(Bucket, {
-            _id: new ObjectId(id),
-        });
+        // await myDataSource.manager.delete(Bucket, {
+        //     _id: new ObjectId(id),
+        // });
+        await Bucket.deleteOne({ _id: objectIdConverter(id) })
 
         // Delete the file in storage
         await fs.unlink(`./my_bucket/${entity._id}`);

@@ -1,20 +1,24 @@
-import { Entity, ObjectId, ObjectIdColumn, Column, JoinColumn, OneToOne } from 'typeorm';
-import { Profile } from './profile';
+import mongoose from "mongoose";
 
-@Entity()
-export class Account {
-    @ObjectIdColumn()
-    _id: ObjectId;
+const AccountSchema = new mongoose.Schema({
+    username: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    profile: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Profile"
+    }
+}, {
+    versionKey: false
+});
 
-    @Column()
-    username: string;
-
-    @Column()
-    email: string;
-
-    @Column()
-    password: string;
-
-    @Column((type) => Profile)
-    profile: Profile;
-}
+export const Account = mongoose.model('Account', AccountSchema, 'accounts');

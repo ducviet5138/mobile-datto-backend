@@ -1,18 +1,18 @@
-import { Entity, ObjectId, ObjectIdColumn, Column } from 'typeorm';
-import { Event } from './event';
-import { Bucket } from './bucket';
+import mongoose from "mongoose";
+const MemorySchema = new mongoose.Schema({
+    event: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Event"
+    },
+    thumbnail: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Bucket"
+    },
+    info: {
+        type: String,
+    }
+}, {
+    versionKey: false
+});
 
-@Entity()
-export class Memory {
-    @ObjectIdColumn()
-    _id: ObjectId;
-
-    @Column(() => Event)
-    event: Event;
-
-    @Column(() => Bucket)
-    thumbnail: Bucket;
-
-    @Column()
-    info: string;
-}
+export const Memory = mongoose.model('Memory', MemorySchema, 'memories');

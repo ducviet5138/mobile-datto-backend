@@ -1,30 +1,30 @@
-import { Entity, ObjectId, ObjectIdColumn, Column } from 'typeorm';
-import { Account } from './account';
-import { Bucket } from './bucket';
-import { Event } from './event';
-import { Memory } from './memories';
-import account from '@/services/account';
+import mongoose from "mongoose";
 
-@Entity()
-export class Group {
-    @ObjectIdColumn()
-    _id: ObjectId;
+const GroupSchema = new mongoose.Schema({
+    name: {
+        type: String,
+    },
+    thumbnail: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Bucket"
+    },
+    inviteCode: {
+        type: String,
+    },
+    members: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Account"
+    }],
+    events: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: Event
+    }],
+    memories: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Memory"
+    }]
+}, {
+    versionKey: false
+});
 
-    @Column()
-    name: string;
-
-    @Column((type) => Bucket)
-    thumbnail: Bucket;
-
-    @Column()
-    inviteCode: string;
-
-    @Column((type) => Account)
-    members: Account[];
-
-    @Column((type) => Event)
-    events: Event[];
-
-    @Column((type) => Memory)
-    memories: Memory[];
-}
+export const Group = mongoose.model('Group', GroupSchema, 'groups');

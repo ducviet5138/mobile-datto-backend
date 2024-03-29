@@ -1,14 +1,13 @@
-import { myDataSource } from '@/app-data-src';
 import { Request } from 'express';
 import BaseResponse from '@/utils/baseResponse';
 import { RET_CODE, RET_MSG } from '@/utils/returnCode';
-import { ObjectId } from 'mongodb';
 import { OTP } from '@/entities';
 import * as nodemailer from 'nodemailer';
 import * as dotenv from 'dotenv';
 dotenv.config();
 import generateOTP from '@/utils/generateOTP';
-import { MongoRepository } from 'typeorm';
+import objectIdConverter from '@/utils/objectIdConverter';
+
 
 const transporter = nodemailer.createTransport({
     host: process.env.MAIL_HOST,
@@ -21,19 +20,17 @@ const transporter = nodemailer.createTransport({
 });
 
 class OTPService {
-    repository: MongoRepository<OTP>;
-
-    constructor() {
-        this.repository = myDataSource.manager.getMongoRepository(OTP);
-    }
+    repository = OTP;
 
     async sendOTP(req: Request) {
         try {
             const { email } = req.body;
 
-            const otp = new OTP();
-            otp.code = generateOTP();
-            const data = await this.repository.save(otp);
+            const otp = new OTP({
+                code: generateOTP(),
+            });
+            
+            const data = await otp.save();
 
             // Send OTP to users' email
             await transporter.sendMail({
@@ -69,13 +66,13 @@ class OTPService {
     async verifyOTP(req: Request) {
         try {
             const { otpId, code } = req.body;
-            const otp = await this.repository.findOneBy({ _id: new ObjectId(otpId), code });
+            const otp = await this.repository.findOne({ _id: objectIdConverter(otpId), code });
 
             if (!otp) {
                 return new BaseResponse(RET_CODE.ERROR, false, 'Invalid OTP');
             }
 
-            await this.repository.deleteOne({ _id: new ObjectId(otpId) });
+            await this.repository.deleteOne({ _id: objectIdConverter(otpId) });
 
             // Check if OTP is expired
             const now = new Date();

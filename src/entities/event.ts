@@ -1,29 +1,29 @@
-import { Entity, ObjectId, ObjectIdColumn, Column } from 'typeorm';
-import { Calendar } from './calendar';
-import { Timeline } from './timeline';
-import { Fund } from './fund';
+import mongoose from "mongoose";
 
-@Entity()
-export class Event {
-    @ObjectIdColumn()
-    _id: ObjectId;
+const EventSchema = new mongoose.Schema({
+    name: {
+        type: String,
+    },
+    time: {
+        type: Object,
+    },
+    calendars: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Calendar"
+    }],
+    timelines: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Timeline"
+    }],
+    funds: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Fund"
+    }],
+    description: {
+        type: String,
+    }
+}, {
+    versionKey: false
+});
 
-    @Column()
-    name: string;
-
-    @Column()
-    time: object;
-    // { start: Datetime, end: Datetime }
-
-    @Column((type) => Calendar)
-    calendars: Calendar[];
-
-    @Column((type) => Timeline)
-    timelines: Timeline[];
-
-    @Column((type) => Fund)
-    funds: Fund[];
-
-    @Column()
-    description: string;
-}
+export const Event = mongoose.model('Event', EventSchema, 'events');

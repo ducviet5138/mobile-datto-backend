@@ -1,17 +1,18 @@
-import { Entity, ObjectId, ObjectIdColumn, Column } from 'typeorm';
-import { Bucket } from './bucket';
+import mongoose from "mongoose";
 
-@Entity()
-export class Profile {
-    @ObjectIdColumn()
-    _id: ObjectId;
+const ProfileSchema = new mongoose.Schema({
+    fullName: {
+        type: String,
+    },
+    dob: {
+        type: Date,
+    },
+    avatar: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Bucket"
+    }
+}, {
+    versionKey: false
+});
 
-    @Column()
-    fullName: string;
-
-    @Column()
-    dob: Date;
-
-    @Column((type) => Bucket)
-    avatar: Bucket;
-}
+export const Profile = mongoose.model('Profile', ProfileSchema, 'profiles');

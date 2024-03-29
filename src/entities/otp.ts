@@ -1,13 +1,15 @@
-import { Entity, ObjectId, ObjectIdColumn, Column } from 'typeorm';
+import mongoose from "mongoose";
 
-@Entity()
-export class OTP {
-    @ObjectIdColumn()
-    _id: ObjectId;
+const OTPSchema = new mongoose.Schema({
+    code: {
+        type: Number,
+    },
+    expiredAt: {
+        type: Date,
+        default: () => new Date(Date.now() + 5 * 60 * 1000)
+    }
+}, {
+    versionKey: false
+});
 
-    @Column()
-    code: number;
-
-    @Column({ type: 'timestamp' })
-    expiredAt: Date = new Date(Date.now() + 5 * 60 * 1000);
-}
+export const OTP = mongoose.model('OTP', OTPSchema, 'otps');

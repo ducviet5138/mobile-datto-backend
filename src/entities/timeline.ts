@@ -1,20 +1,20 @@
-import { Timestamp } from 'mongodb';
-import { Entity, ObjectId, ObjectIdColumn, Column } from 'typeorm';
+import mongoose from "mongoose";
 
-@Entity()
-export class Timeline {
-    @ObjectIdColumn()
-    _id: ObjectId;
+const TimelineSchema = new mongoose.Schema({
+    name: {
+        type: String,
+    },
+    location: {
+        type: Object,
+    },
+    startTime: {
+        type: Date,
+    },
+    duration: {
+        type: Date,
+    }
+}, {
+    versionKey: false
+});
 
-    @Column()
-    name: string;
-
-    @Column()
-    location: object;
-
-    @Column()
-    startTime: Date;
-
-    @Column()
-    duration: Timestamp;
-}
+export const Timeline = mongoose.model('Timeline', TimelineSchema, 'timelines');

@@ -2,7 +2,7 @@
 // Set up database and express server
 import * as express from 'express';
 import 'reflect-metadata';
-import { myDataSource } from './app-data-src';
+import databaseInitialize from './app-data-src';
 import 'module-alias/register';
 
 const app = express();
@@ -11,8 +11,7 @@ app.use(express.json());
 
 const startServer = async () => {
     try {
-        await myDataSource.initialize();
-        console.log('[Database] Database has been initialized!');
+        await databaseInitialize();
 
         app.listen(port, () => {
             console.log(`[Server] Server is running at http://localhost:${port}`);

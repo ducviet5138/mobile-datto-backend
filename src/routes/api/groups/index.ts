@@ -79,7 +79,6 @@ router.post("/join", async (req: Request, res: Response) => {
     }
 });
 
-
 // GET /api/groups/accounts/:id
 // Feat: Get accounts's groups
 router.get("/accounts/:id", async (req: Request, res: Response) => {

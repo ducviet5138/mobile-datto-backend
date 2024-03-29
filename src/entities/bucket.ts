@@ -1,10 +1,11 @@
-import { Entity, ObjectId, ObjectIdColumn, Column } from 'typeorm';
+import mongoose from "mongoose";
 
-@Entity()
-export class Bucket {
-    @ObjectIdColumn()
-    _id: ObjectId;
+const BucketSchema = new mongoose.Schema({
+    fileName: {
+        type: String,
+    }
+}, {
+    versionKey: false
+});
 
-    @Column()
-    fileName: string;
-}
+export const Bucket = mongoose.model('Bucket', BucketSchema, 'buckets');

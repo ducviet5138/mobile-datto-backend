@@ -1,20 +1,21 @@
-import { Entity, ObjectId, ObjectIdColumn, Column } from 'typeorm';
-import { Account } from './account';
+import mongoose from "mongoose";
 
-@Entity()
-export class Fund {
-    @ObjectIdColumn()
-    _id: ObjectId;
+const FundSchema = new mongoose.Schema({
+    paidBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Account"
+    },
+    amount: {
+        type: Number,
+    },
+    info: {
+        type: String,
+    },
+    paidAt: {
+        type: Date,
+    }
+}, {
+    versionKey: false
+});
 
-    @Column(() => Account)
-    paidBy: Account;
-
-    @Column()
-    amount: number;
-
-    @Column()
-    info: string;
-
-    @Column()
-    paidAt: Date;
-}
+export const Fund = mongoose.model('Fund', FundSchema, 'funds');

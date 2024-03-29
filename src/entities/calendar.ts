@@ -1,15 +1,15 @@
-import { Entity, ObjectId, ObjectIdColumn, Column } from 'typeorm';
-import { Account } from './account';
+import mongoose from "mongoose";
 
-@Entity()
-export class Calendar {
-    @ObjectIdColumn()
-    _id: ObjectId;
+const CalendarSchema = new mongoose.Schema({
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Account"
+    },
+    time: {
+        type: Object,
+    }
+}, {
+    versionKey: false
+});
 
-    @Column(() => Account)
-    createdBy: Account;
-
-    @Column()
-    time: object;
-    // { start: Datetime, end: Datetime }
-}
+export const Calendar = mongoose.model('Calendar', CalendarSchema, 'calendars');

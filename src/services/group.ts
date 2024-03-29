@@ -1,40 +1,30 @@
-import { myDataSource } from '@/app-data-src';
 import { Request } from 'express';
 import BaseResponse from '@/utils/baseResponse';
 import { RET_CODE, RET_MSG } from '@/utils/returnCode';
-import { ObjectId } from 'mongodb';
-import { Group } from '@/entities';
-import BucketService from '@/services/bucket';
-import { MongoRepository } from 'typeorm';
+import { Group, Account, Bucket } from '@/entities';
 import AccountService from '@/services/account';
 import generateInviteCode from '@/utils/generateInviteCode';
+import objectIdConverter from '@/utils/objectIdConverter';
 
 class GroupService {
-    repository: MongoRepository<Group>;
-
-    constructor() {
-        this.repository = myDataSource.manager.getMongoRepository(Group);
-    }
+    repository = Group;
 
     async create(req: Request) {
         try {
             const { accountId, name, thumbnail } = req.body;
-            const account = await AccountService.getAccountById(new ObjectId(accountId));
+            const account = await Account.findById(objectIdConverter(accountId));
 
             if (!name || !account) {
                 return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Name is required');
             }
 
-            // Add data to the group
-            const thumbnailObject = await BucketService.getBucketObject(new ObjectId(thumbnail));
-
             const group = new Group();
             group.name = name;
             group.inviteCode = generateInviteCode();
-            if (thumbnailObject) group.thumbnail = thumbnailObject;
-            group.members = [account];
+            if (thumbnail) group.thumbnail = objectIdConverter(thumbnail);
+            group.members = [account._id];
 
-            const data = await this.repository.save(group);
+            const data = await group.save();
 
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data);
         } catch (_: any) {
@@ -44,12 +34,12 @@ class GroupService {
 
     async getGroupInfo(req: Request) {
         try {
-            const id = new ObjectId(req.params.id);
+            const id = objectIdConverter(req.params.id);
 
-            const data = await this.repository.findOneBy({ _id: id });
+            const data = await this.repository.findById({ _id: id });
 
             if (!data) {
-                return new BaseResponse(RET_CODE.NOT_FOUND, false, 'Group not found');
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Group not found');
             }
 
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data);
@@ -60,12 +50,12 @@ class GroupService {
 
     async getGroupMembers(req: Request) {
         try {
-            const id = new ObjectId(req.params.id);
+            const id = objectIdConverter(req.params.id);
 
-            const data = await this.repository.findOneBy({ _id: id });
+            const data = await this.repository.findById({ _id: id });
 
             if (!data) {
-                return new BaseResponse(RET_CODE.NOT_FOUND, false, 'Group not found');
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Group not found');
             }
 
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data.members);
@@ -76,22 +66,20 @@ class GroupService {
 
     async patch(req: Request) {
         try {
-            const id = new ObjectId(req.params.id);
-            const { name, thumbnail, newMemberId } = req.body;
+            const id = objectIdConverter(req.params.id);
+            const { name, thumbnail, members } = req.body;
 
-            const group = await this.repository.findOneBy({ _id: id });
+            const group = await this.repository.findById({ _id: id });
 
             if (!group) {
-                return new BaseResponse(RET_CODE.NOT_FOUND, false, 'Group not found');
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Group not found');
             }
-
-            const newMember = await AccountService.getAccountById(new ObjectId(newMemberId));
 
             group.name = name || group.name;
             group.thumbnail = thumbnail || group.thumbnail;
-            group.members.push(newMember);
+            if (members) group.members = group.members;
 
-            const data = await this.repository.update({ _id: id }, group);
+            const data = await this.repository.updateOne({ _id: id }, group);
 
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data);
         } catch (_: any) {
@@ -101,16 +89,16 @@ class GroupService {
 
     async generateInviteCode(req: Request) {
         try {
-            const id = new ObjectId(req.params.id);
+            const id = objectIdConverter(req.params.id);
 
-            const group = await this.repository.findOneBy({ _id: id });
+            const group = await this.repository.findById(id);
 
             if (!group) {
-                return new BaseResponse(RET_CODE.NOT_FOUND, false, 'Group not found');
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Group not found');
             }
 
             group.inviteCode = generateInviteCode();
-            await this.repository.update({ _id: id }, group);
+            await this.repository.updateOne({ _id: id }, group);
 
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, group.inviteCode);
         } catch (_: any) {
@@ -122,16 +110,15 @@ class GroupService {
         try {
             const { inviteCode, accountId } = req.body;
 
-            const data = await this.repository.findOneBy({ inviteCode });
+            const data = await this.repository.findOne({ inviteCode });
 
             if (!data) {
-                return new BaseResponse(RET_CODE.NOT_FOUND, false, 'Group not found');
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Group not found');
             }
 
-            const account = await AccountService.getAccountById(new ObjectId(accountId));
-            data.members.push(account);
+            data.members.push(objectIdConverter(accountId));
 
-            await this.repository.update({ inviteCode }, data);
+            await this.repository.updateOne({ inviteCode }, data);
 
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data);
         } catch (_: any) {
@@ -141,16 +128,18 @@ class GroupService {
 
     async getAccountsGroups(req: Request) {
         try {
-            const accountId = new ObjectId(req.params.id);
+            const accountId = objectIdConverter(req.params.id);
+            console.log(accountId)
 
             const data = await this.repository.find({
                 members: {
-                    $elemMatch: { _id: accountId },
+                    $in: accountId,
                 },
             });
 
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data);
         } catch (_: any) {
+            console.log(_);
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
     }
