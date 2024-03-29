@@ -1,15 +1,18 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const OTPSchema = new mongoose.Schema({
-    code: {
-        type: Number,
+const OTPSchema = new mongoose.Schema(
+    {
+        code: {
+            type: Number,
+        },
+        expiredAt: {
+            type: Date,
+            default: () => new Date(Date.now() + 5 * 60 * 1000),
+        },
     },
-    expiredAt: {
-        type: Date,
-        default: () => new Date(Date.now() + 5 * 60 * 1000)
+    {
+        versionKey: false,
     }
-}, {
-    versionKey: false
-});
+);
 
 export const OTP = mongoose.model('OTP', OTPSchema, 'otps');

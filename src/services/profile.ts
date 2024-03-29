@@ -15,15 +15,11 @@ class ProfileService {
             profile.fullName = fullName;
             profile.dob = new Date('1970-01-01');
             profile.avatar = null;
-            
-            console.log(profile);
 
             const data = await profile.save();
-            console.log(data);
 
             return data;
         } catch (_: any) {
-            console.log(_);
             return null;
         }
     }

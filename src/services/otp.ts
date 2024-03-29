@@ -8,7 +8,6 @@ dotenv.config();
 import generateOTP from '@/utils/generateOTP';
 import objectIdConverter from '@/utils/objectIdConverter';
 
-
 const transporter = nodemailer.createTransport({
     host: process.env.MAIL_HOST,
     port: parseInt(process.env.MAIL_PORT),
@@ -29,7 +28,7 @@ class OTPService {
             const otp = new OTP({
                 code: generateOTP(),
             });
-            
+
             const data = await otp.save();
 
             // Send OTP to users' email
@@ -58,7 +57,6 @@ class OTPService {
 
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data._id);
         } catch (_: any) {
-            console.log(_);
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
     }

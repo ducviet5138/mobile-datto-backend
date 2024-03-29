@@ -1,18 +1,21 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const ProfileSchema = new mongoose.Schema({
-    fullName: {
-        type: String,
+const ProfileSchema = new mongoose.Schema(
+    {
+        fullName: {
+            type: String,
+        },
+        dob: {
+            type: Date,
+        },
+        avatar: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Bucket',
+        },
     },
-    dob: {
-        type: Date,
-    },
-    avatar: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Bucket"
+    {
+        versionKey: false,
     }
-}, {
-    versionKey: false
-});
+);
 
 export const Profile = mongoose.model('Profile', ProfileSchema, 'profiles');

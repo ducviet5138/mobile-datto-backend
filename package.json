@@ -7,7 +7,8 @@
         "start": "nodemon src/app.ts",
         "lint": "eslint src --ext .ts",
         "lint:fix": "eslint src --ext .ts --fix",
-        "prettier": "prettier --write src/**/*.ts"
+        "prettier": "prettier --write src/**/*.ts",
+        "format": "npm run prettier && npm run lint:fix"
     },
     "lint-staged": {
         "*.ts": [

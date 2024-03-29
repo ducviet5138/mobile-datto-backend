@@ -98,7 +98,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
         // await myDataSource.manager.delete(Bucket, {
         //     _id: new ObjectId(id),
         // });
-        await Bucket.deleteOne({ _id: objectIdConverter(id) })
+        await Bucket.deleteOne({ _id: objectIdConverter(id) });
 
         // Delete the file in storage
         await fs.unlink(`./my_bucket/${entity._id}`);

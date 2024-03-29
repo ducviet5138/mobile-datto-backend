@@ -1,21 +1,24 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const FundSchema = new mongoose.Schema({
-    paidBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Account"
+const FundSchema = new mongoose.Schema(
+    {
+        paidBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Account',
+        },
+        amount: {
+            type: Number,
+        },
+        info: {
+            type: String,
+        },
+        paidAt: {
+            type: Date,
+        },
     },
-    amount: {
-        type: Number,
-    },
-    info: {
-        type: String,
-    },
-    paidAt: {
-        type: Date,
+    {
+        versionKey: false,
     }
-}, {
-    versionKey: false
-});
+);
 
 export const Fund = mongoose.model('Fund', FundSchema, 'funds');

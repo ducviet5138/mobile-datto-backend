@@ -5,7 +5,6 @@ import { Account } from '@/entities';
 import ProfileService from '@/services/profile';
 import hashPassword from '@/utils/hashPassword';
 import objectIdConverter from '@/utils/objectIdConverter';
-import { Schema } from 'mongoose';
 
 class AccountService {
     repository = Account;
@@ -22,7 +21,6 @@ class AccountService {
             }
 
             const profileResponse = await ProfileService.createWithFullName(req);
-            console.log(profileResponse)
 
             if (!profileResponse) {
                 return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
@@ -63,7 +61,7 @@ class AccountService {
     async get(req: Request) {
         try {
             const id = req.params.id;
-            const data = await this.repository.findById(objectIdConverter(id)).populate("profile");
+            const data = await this.repository.findById(objectIdConverter(id)).populate('profile');
 
             if (!data) {
                 return new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);
@@ -74,7 +72,6 @@ class AccountService {
 
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data);
         } catch (_: any) {
-            console.log(_);
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
     }
@@ -85,7 +82,6 @@ class AccountService {
             const { username, password } = req.body;
 
             const data = await this.repository.findById(objectIdConverter(id));
-    
 
             if (!data) {
                 return new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);

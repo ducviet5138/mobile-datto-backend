@@ -1,11 +1,14 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const BucketSchema = new mongoose.Schema({
-    fileName: {
-        type: String,
+const BucketSchema = new mongoose.Schema(
+    {
+        fileName: {
+            type: String,
+        },
+    },
+    {
+        versionKey: false,
     }
-}, {
-    versionKey: false
-});
+);
 
 export const Bucket = mongoose.model('Bucket', BucketSchema, 'buckets');

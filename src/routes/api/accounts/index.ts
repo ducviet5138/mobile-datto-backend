@@ -1,14 +1,14 @@
-import * as Express from "express"
-import { Request, Response } from "express"
-import BaseResponse from "@/utils/baseResponse";
-import { RET_CODE, RET_MSG } from "@/utils/returnCode";
-import AccountService from "@/services/account"
+import * as Express from 'express';
+import { Request, Response } from 'express';
+import BaseResponse from '@/utils/baseResponse';
+import { RET_CODE, RET_MSG } from '@/utils/returnCode';
+import AccountService from '@/services/account';
 
 const router = Express.Router();
 
 // POST: /api/accounts
 // Feat: Create account
-router.post("/", async (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response) => {
     try {
         const response = await AccountService.create(req);
         res.status(response.getRetCode()).json(response.getResponse());
@@ -20,7 +20,7 @@ router.post("/", async (req: Request, res: Response) => {
 
 // DELETE: /api/accounts/:id
 // Feat: Delete account
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete('/:id', async (req: Request, res: Response) => {
     try {
         const response = await AccountService.delete(req);
         res.status(response.getRetCode()).json(response.getResponse());
@@ -32,7 +32,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
 
 // GET: /api/accounts/:id
 // Feat: Get account and profile by id
-router.get("/:id", async (req: Request, res: Response) => {
+router.get('/:id', async (req: Request, res: Response) => {
     try {
         const response = await AccountService.get(req);
         res.status(response.getRetCode()).json(response.getResponse());
@@ -44,7 +44,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 
 // PATCH: /api/accounts/:id
 // Feat: Update account information (username, password)
-router.patch("/:id", async (req: Request, res: Response) => {
+router.patch('/:id', async (req: Request, res: Response) => {
     try {
         const response = await AccountService.patch(req);
         res.status(response.getRetCode()).json(response.getResponse());

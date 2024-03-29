@@ -9,7 +9,7 @@
 //     entities: [Account, Bucket, Calendar, Event, Fund, Group, Memory, OTP, Profile, Timeline],
 // });
 
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 export default async function databaseInitialize(){
     const uri = 'mongodb://localhost:27017/datto';

@@ -1,8 +1,7 @@
 import { Request } from 'express';
 import BaseResponse from '@/utils/baseResponse';
 import { RET_CODE, RET_MSG } from '@/utils/returnCode';
-import { Group, Account, Bucket } from '@/entities';
-import AccountService from '@/services/account';
+import { Group, Account } from '@/entities';
 import generateInviteCode from '@/utils/generateInviteCode';
 import objectIdConverter from '@/utils/objectIdConverter';
 
@@ -52,7 +51,13 @@ class GroupService {
         try {
             const id = objectIdConverter(req.params.id);
 
-            const data = await this.repository.findById({ _id: id });
+            const data = await this.repository.findById({ _id: id }).populate({
+                path: 'members',
+                select: '_id profile',
+                populate: {
+                    path: 'profile',
+                },
+            });
 
             if (!data) {
                 return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Group not found');
@@ -77,11 +82,13 @@ class GroupService {
 
             group.name = name || group.name;
             group.thumbnail = thumbnail || group.thumbnail;
-            if (members) group.members = group.members;
+            if (members) {
+                group.members = members.map((member: string) => objectIdConverter(member));
+            }
 
-            const data = await this.repository.updateOne({ _id: id }, group);
+            await this.repository.updateOne({ _id: id }, group);
 
-            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data);
+            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, group);
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
@@ -129,7 +136,6 @@ class GroupService {
     async getAccountsGroups(req: Request) {
         try {
             const accountId = objectIdConverter(req.params.id);
-            console.log(accountId)
 
             const data = await this.repository.find({
                 members: {
@@ -139,7 +145,6 @@ class GroupService {
 
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data);
         } catch (_: any) {
-            console.log(_);
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
     }
