@@ -61,4 +61,4 @@ typings/
 .next
 
 # Bucket
-my_bucket
+my_bucket/*
