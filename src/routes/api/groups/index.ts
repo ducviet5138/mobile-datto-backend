@@ -7,86 +7,86 @@ import GroupService from '@/services/group';
 const router = Express.Router();
 
 // POST: /api/groups
-// Feat: Create group
+// Desc: Create group
 router.post('/', async (req: Request, res: Response) => {
     try {
         const response = await GroupService.create(req);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     }
 });
 
 // GET: /api/groups/:id
-// Feat: Get group information
+// Desc: Get group information
 router.get('/:id', async (req: Request, res: Response) => {
     try {
         const response = await GroupService.getGroupInfo(req);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     }
 });
 
 // GET: /api/groups/:id/members
-// Feat: Get group members
+// Desc: Get group members
 router.get('/:id/members', async (req: Request, res: Response) => {
     try {
         const response = await GroupService.getGroupMembers(req);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     }
 });
 
 // PATCH: /api/groups/:id
-// Feat: Update group information
+// Desc: Update group information
 router.patch('/:id', async (req: Request, res: Response) => {
     try {
         const response = await GroupService.patch(req);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     }
 });
 
 // POST: /api/groups/:id/code-generation
-// Feat: Generate new invite code
+// Desc: Generate new invite code
 router.post('/:id/code-generation', async (req: Request, res: Response) => {
     try {
         const response = await GroupService.generateInviteCode(req);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     }
 });
 
 // POST /api/groups/join
-// Feat: Join group
+// Desc: Join group
 router.post('/join', async (req: Request, res: Response) => {
     try {
         const response = await GroupService.joinGroup(req);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     }
 });
 
 // GET /api/groups/accounts/:id
-// Feat: Get accounts's groups
+// Desc: Get accounts's groups
 router.get('/accounts/:id', async (req: Request, res: Response) => {
     try {
         const response = await GroupService.getAccountsGroups(req);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     }
 });
 

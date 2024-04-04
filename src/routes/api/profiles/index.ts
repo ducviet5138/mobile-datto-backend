@@ -7,14 +7,14 @@ import ProfileService from '@/services/profile';
 const router = Express.Router();
 
 // Patch: /api/profile/:id
-// Feat: Update profile information (fullName, dob, avatar, groups)
+// Desc: Update profile information (fullName, dob, avatar, groups)
 router.patch('/:id', async (req: Request, res: Response) => {
     try {
         const response = await ProfileService.patch(req);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     }
 });
 

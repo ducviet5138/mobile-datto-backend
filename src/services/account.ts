@@ -76,10 +76,10 @@ class AccountService {
         }
     }
 
-    async patch(req: Request) {
+    async patchPassword(req: Request) {
         try {
             const id = req.params.id;
-            const { username, password } = req.body;
+            const { currentPassword, newPassword, confirmPassword } = req.body;
 
             const data = await this.repository.findById(objectIdConverter(id));
 
@@ -87,17 +87,24 @@ class AccountService {
                 return new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);
             }
 
-            if (username) {
-                data.username = username;
+            // Check if all fields are filled
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'All fields are required');
             }
 
-            if (password) {
-                data.password = password;
+            if (data.password !== hashPassword(currentPassword)) {
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Current password is incorrect');
             }
+
+            if (newPassword !== confirmPassword) {
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'New password and retype password do not match');
+            }
+
+            data.password = hashPassword(newPassword);
 
             await this.repository.updateOne({ _id: objectIdConverter(id) }, data);
 
-            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data);
+            return new BaseResponse(RET_CODE.SUCCESS, true, "Password changed successfully");
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }

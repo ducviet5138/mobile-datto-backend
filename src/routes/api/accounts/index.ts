@@ -7,50 +7,50 @@ import AccountService from '@/services/account';
 const router = Express.Router();
 
 // POST: /api/accounts
-// Feat: Create account
+// Desc: Create account
 router.post('/', async (req: Request, res: Response) => {
     try {
         const response = await AccountService.create(req);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     }
 });
 
 // DELETE: /api/accounts/:id
-// Feat: Delete account
+// Desc: Delete account
 router.delete('/:id', async (req: Request, res: Response) => {
     try {
         const response = await AccountService.delete(req);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     }
 });
 
 // GET: /api/accounts/:id
-// Feat: Get account and profile by id
+// Desc: Get account and profile by id
 router.get('/:id', async (req: Request, res: Response) => {
     try {
         const response = await AccountService.get(req);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     }
 });
 
-// PATCH: /api/accounts/:id
-// Feat: Update account information (username, password)
-router.patch('/:id', async (req: Request, res: Response) => {
+// PATCH: /api/accounts/:id/password
+// Desc: Change password
+router.patch('/:id/password', async (req: Request, res: Response) => {
     try {
-        const response = await AccountService.patch(req);
-        res.status(response.getRetCode()).json(response.getResponse());
+        const response = await AccountService.patchPassword(req);
+        res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     }
 });
 
