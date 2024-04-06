@@ -54,5 +54,16 @@ router.patch('/:id/password', async (req: Request, res: Response) => {
     }
 });
 
+// PATCH: /api/accounts/:id
+// Desc: Update account and profile including avartar, username, fullname, dob
+router.patch('/:id', async (req: Request, res: Response) => {
+    try {
+        const response = await AccountService.patch(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
 
 export default router;
