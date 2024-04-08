@@ -25,7 +25,9 @@ class GroupService {
 
             const data = await group.save();
 
-            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data);
+            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, {
+                inviteCode: data.inviteCode,
+            });
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
@@ -123,11 +125,16 @@ class GroupService {
                 return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Group not found');
             }
 
+            // Find if the account is already in the group
+            if (data.members.includes(accountId)) {
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'User already in group');
+            }
+
             data.members.push(objectIdConverter(accountId));
 
             await this.repository.updateOne({ inviteCode }, data);
 
-            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data);
+            return new BaseResponse(RET_CODE.SUCCESS, true, 'Joined group successfully');
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }

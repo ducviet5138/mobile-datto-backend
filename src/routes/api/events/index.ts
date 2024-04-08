@@ -7,14 +7,14 @@ import EventService from '@/services/event';
 const router = Express.Router();
 
 // POST: /api/events
-// Feat: Create a new event
+// Desc: Create a new event
 router.post('/', async (req: Request, res: Response) => {
     try {
         const response = await EventService.create(req);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     }
 });
 

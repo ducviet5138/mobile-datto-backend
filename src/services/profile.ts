@@ -37,7 +37,7 @@ class ProfileService {
 
             data.fullName = fullName || data.fullName;
             data.dob = new Date(dob) || data.dob;
-            data.avatar = avatar || data.avatar;
+            if (avatar) data.avatar = objectIdConverter(avatar);
 
             await this.repository.updateOne({ _id: objectIdConverter(id) }, data);
 

@@ -7,26 +7,26 @@ import OTP from '@/services/otp';
 const router = Express.Router();
 
 // POST: /api/otp
-// Feat: Send OTP
+// Desc: Send OTP
 router.post('/', async (req: Request, res: Response) => {
     try {
         const response = await OTP.sendOTP(req);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     }
 });
 
 // POST: /api/otp/verification
-// Feat: Verify OTP
+// Desc: Verify OTP
 router.post('/verification', async (req: Request, res: Response) => {
     try {
         const response = await OTP.verifyOTP(req);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
-        res.status(response.getRetCode()).json(response.getResponse());
+        res.json(response.getResponse());
     }
 });
 
