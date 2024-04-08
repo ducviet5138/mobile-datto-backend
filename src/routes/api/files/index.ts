@@ -33,7 +33,6 @@ router.put('/', upload.single('file'), async (req: Request, res: Response) => {
         const response = new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, {
             _id: entity._id,
         });
-        console.log(response.getResponse());
 
         res.json(response.getResponse());
     } catch (_: any) {

@@ -104,7 +104,7 @@ class AccountService {
 
             await this.repository.updateOne({ _id: objectIdConverter(id) }, data);
 
-            return new BaseResponse(RET_CODE.SUCCESS, true, "Password changed successfully");
+            return new BaseResponse(RET_CODE.SUCCESS, true, 'Password changed successfully');
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
@@ -134,7 +134,7 @@ class AccountService {
             req.params.id = data.profile.toString();
             const profileResponse = await ProfileService.patch(req);
 
-            return new BaseResponse(RET_CODE.SUCCESS, true, "Profile updated successfully");
+            return new BaseResponse(RET_CODE.SUCCESS, true, 'Profile updated successfully');
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
