@@ -132,7 +132,7 @@ class AccountService {
             // Update profile in ProfileService
             // Patch req.params.id to profileID to reuse ProfileService.patch
             req.params.id = data.profile.toString();
-            const profileResponse = await ProfileService.patch(req);
+            await ProfileService.patch(req);
 
             return new BaseResponse(RET_CODE.SUCCESS, true, 'Profile updated successfully');
         } catch (_: any) {

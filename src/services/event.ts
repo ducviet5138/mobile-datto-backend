@@ -9,8 +9,10 @@ class EventService {
 
     async create(req: Request) {
         try {
-            const { groupId, name, start, end } = req.body;
-            const group = await Group.findById(objectIdConverter(groupId));
+            const groupId = objectIdConverter(req.params.id);
+
+            const { name, start, end } = req.body;
+            const group = await Group.findById(groupId);
 
             const event = new Event();
             event.name = name;
