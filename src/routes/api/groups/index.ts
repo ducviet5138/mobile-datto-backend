@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import BaseResponse from '@/utils/baseResponse';
 import { RET_CODE, RET_MSG } from '@/utils/returnCode';
 import GroupService from '@/services/group';
+import EventService from '@/services/event';
 
 const router = Express.Router();
 
@@ -83,6 +84,18 @@ router.post('/join', async (req: Request, res: Response) => {
 router.get('/accounts/:id', async (req: Request, res: Response) => {
     try {
         const response = await GroupService.getAccountsGroups(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
+// POST /api/groups/:id/events
+// Desc: Create a new event
+router.post('/:id/events', async (req: Request, res: Response) => {
+    try {
+        const response = await EventService.create(req);
         res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
