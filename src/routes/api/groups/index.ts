@@ -79,18 +79,6 @@ router.post('/join', async (req: Request, res: Response) => {
     }
 });
 
-// GET /api/groups/accounts/:id
-// Desc: Get accounts's groups
-router.get('/accounts/:id', async (req: Request, res: Response) => {
-    try {
-        const response = await GroupService.getAccountsGroups(req);
-        res.json(response.getResponse());
-    } catch (_: any) {
-        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
-        res.json(response.getResponse());
-    }
-});
-
 // POST /api/groups/:id/events
 // Desc: Create a new event
 router.post('/:id/events', async (req: Request, res: Response) => {

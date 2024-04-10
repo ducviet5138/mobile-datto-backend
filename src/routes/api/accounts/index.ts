@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import BaseResponse from '@/utils/baseResponse';
 import { RET_CODE, RET_MSG } from '@/utils/returnCode';
 import AccountService from '@/services/account';
+import GroupService from '@/services/group';
 
 const router = Express.Router();
 
@@ -59,6 +60,18 @@ router.patch('/:id/password', async (req: Request, res: Response) => {
 router.patch('/:id', async (req: Request, res: Response) => {
     try {
         const response = await AccountService.patch(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
+// GET: /api/accounts/:id/groups
+// Desc: Get groups that account is in
+router.get('/:id/groups', async (req: Request, res: Response) => {
+    try {
+        const response = await GroupService.getAccountsGroups(req);
         res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
