@@ -3,8 +3,21 @@ import { Request, Response } from 'express';
 import BaseResponse from '@/utils/baseResponse';
 import { RET_CODE, RET_MSG } from '@/utils/returnCode';
 import FundService from '@/services/fund';
+import EventService from '@/services/event';
 
 const router = Express.Router();
+
+// GET /api/events/:id
+// Desc: Get event information
+router.get('/:id', async (req: Request, res: Response) => {
+    try {
+        const response = await EventService.getEventInfo(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
 
 // POST /api/events/:eventId/funds/:id
 // Desc: Create a new expense
