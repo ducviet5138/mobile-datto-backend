@@ -35,7 +35,7 @@ class FundService {
             event.funds.push(data._id);
             await event.save();
 
-            return new BaseResponse(RET_CODE.ERROR, false, 'Add new fund successfully');
+            return new BaseResponse(RET_CODE.ERROR, true, 'Add new fund successfully');
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
