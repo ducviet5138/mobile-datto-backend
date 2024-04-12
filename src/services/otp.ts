@@ -55,7 +55,9 @@ class OTPService {
                     `,
             });
 
-            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data._id);
+            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, {
+                _id: data._id,
+            });
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }

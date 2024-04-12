@@ -91,6 +91,34 @@ class FundService {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
     }
+
+    async get(req: Request)
+    {
+        try {
+            const eventId = objectIdConverter(req.params.id);
+
+            // Get event with funds
+            const event = await Event.findById(eventId);
+            if (!event) return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find an event');
+            
+            // Get all funds with account and populate 'paidBy' and 'paidBy.profile'
+            const funds = await Fund.find({ _id: { $in: event.funds } })
+                .populate({
+                    path: 'paidBy',
+                    select: 'profile _id',
+                    populate: {
+                        path: 'profile',
+                        select: '_id fullName',
+                    }
+                }).sort({ paidAt: -1 });
+
+            return new BaseResponse(RET_CODE.SUCCESS, true, 'Get funds successfully', {
+                funds
+            });
+        } catch (_: any) {
+            return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        }
+    }
 }
 
 export default new FundService();
