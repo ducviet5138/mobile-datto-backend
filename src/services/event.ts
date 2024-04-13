@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import BaseResponse from '@/utils/baseResponse';
 import { RET_CODE, RET_MSG } from '@/utils/returnCode';
-import { Account, Event, Group, Profile } from '@/entities';
+import { Account, Event, Group } from '@/entities';
 import objectIdConverter from '@/utils/objectIdConverter';
 
 class EventService {
@@ -77,7 +77,6 @@ class EventService {
 
                 members.push(member);
             }
-
 
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, {
                 members,

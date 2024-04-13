@@ -2,7 +2,7 @@ import * as Express from 'express';
 import apiRoutes from './api';
 import { Request, Response } from 'express';
 import BaseResponse from '@/utils/baseResponse';
-import { RET_CODE, RET_MSG } from '@/utils/returnCode';
+import { RET_CODE } from '@/utils/returnCode';
 
 const router = Express.Router();
 
@@ -10,7 +10,7 @@ router.use('/api', apiRoutes);
 
 // Undefined routes
 router.use('*', (req: Request, res: Response) => {
-    const response = new BaseResponse(RET_CODE.NOT_FOUND, false, RET_MSG.NOT_FOUND);
+    const response = new BaseResponse(RET_CODE.NOT_FOUND, false, 'API route not found');
     res.json(response.getResponse());
 });
 

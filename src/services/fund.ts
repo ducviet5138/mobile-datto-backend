@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import BaseResponse from '@/utils/baseResponse';
 import { RET_CODE, RET_MSG } from '@/utils/returnCode';
-import { Fund, Event } from '@/entities';
+import { Fund, Event, Group } from '@/entities';
 import objectIdConverter from '@/utils/objectIdConverter';
 
 class FundService {
@@ -57,7 +57,7 @@ class FundService {
             // Remove fund
             await this.repository.findByIdAndDelete(req.params.id);
 
-            return new BaseResponse(RET_CODE.ERROR, false, 'Delete new fund successfully');
+            return new BaseResponse(RET_CODE.ERROR, true, 'Delete new fund successfully');
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
@@ -65,13 +65,7 @@ class FundService {
 
     async patch(req: Request) {
         try {
-            const eventId = objectIdConverter(req.params.eventId);
             const id = objectIdConverter(req.params.id);
-
-            // Get event
-            const event = await Event.findById(eventId);
-            if (!event) return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find an event');
-
             const { paidBy, amount, info, paidAt } = req.body;
 
             // Update fund if it exists
@@ -86,21 +80,20 @@ class FundService {
 
             await fund.save();
 
-            return new BaseResponse(RET_CODE.ERROR, false, 'Update new fund successfully');
+            return new BaseResponse(RET_CODE.ERROR, true, 'Update new fund successfully');
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
     }
 
-    async get(req: Request)
-    {
+    async getAllFunds(req: Request) {
         try {
             const eventId = objectIdConverter(req.params.id);
 
             // Get event with funds
             const event = await Event.findById(eventId);
             if (!event) return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find an event');
-            
+
             // Get all funds with account and populate 'paidBy' and 'paidBy.profile'
             const funds = await Fund.find({ _id: { $in: event.funds } })
                 .populate({
@@ -109,11 +102,61 @@ class FundService {
                     populate: {
                         path: 'profile',
                         select: '_id fullName',
-                    }
-                }).sort({ paidAt: -1 });
+                    },
+                })
+                .sort({ paidAt: -1 });
 
             return new BaseResponse(RET_CODE.SUCCESS, true, 'Get funds successfully', {
-                funds
+                funds,
+            });
+        } catch (_: any) {
+            return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        }
+    }
+
+    async get(req: Request) {
+        try {
+            const id = objectIdConverter(req.params.id);
+            const fund = await this.repository.findById(id)
+                .populate({
+                    path: 'paidBy',
+                    select: 'profile _id',
+                    populate: {
+                        path: 'profile',
+                        select: '_id fullName',
+                    },
+                });
+
+            return new BaseResponse(RET_CODE.SUCCESS, true, 'Get fund successfully', fund);
+        } catch (_: any) {
+            return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        }
+    }
+
+    async getMembers(req: Request) {
+        try {
+            const id = objectIdConverter(req.params.id);
+            
+            // Find a event with funds
+            const event = await Event.findOne({ funds: { $in: [id] } });
+
+            if (!event) return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find an event');
+
+            // Find group with event
+            const group = await Group.findOne({ events: { $in: [event?._id] } })
+                .populate({
+                    path: 'members',
+                    select: 'profile _id',
+                    populate: {
+                        path: 'profile',
+                        select: '_id fullName',
+                    },
+                });
+
+            if (!group) return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find a group');
+
+            return new BaseResponse(RET_CODE.SUCCESS, true, 'Get members successfully', {
+                members: group.members,
             });
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
