@@ -16,8 +16,12 @@ class AccountService {
             const duplicateUsername = await this.repository.findOne({ username });
             const duplicateEmail = await this.repository.findOne({ email });
 
-            if (duplicateUsername || duplicateEmail) {
-                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Username or email already exists');
+            if (duplicateEmail) {
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Email already exists');
+            }
+
+            if (duplicateUsername) {
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Username already exists');
             }
 
             const profileResponse = await ProfileService.createWithFullName(req);
@@ -135,6 +139,50 @@ class AccountService {
             await ProfileService.patch(req);
 
             return new BaseResponse(RET_CODE.SUCCESS, true, 'Profile updated successfully');
+        } catch (_: any) {
+            return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        }
+    }
+
+    async getByUsername(req: Request) {
+        try {
+            const { username, password } = req.body;
+            const account = await this.repository.findOne({ username });
+
+            if (!account) {
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'This account does not exist.');
+            }
+
+            if (account.password !== hashPassword(password)) {
+                return new BaseResponse(RET_CODE.UNAUTHORIZED, false, 'Incorrect password');
+            }
+
+            // Remove password field
+            account.password = undefined;
+
+            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, {
+                _id: account._id,
+            });
+        } catch (error) {
+            return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        }
+    }
+
+    async resetPassword(req: Request) {
+        try {
+            const { email, password } = req.body;
+
+            const data = await this.repository.findOne({ email });
+            // console.log('RS:', data);
+            if (!data) {
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);
+            }
+
+            data.password = hashPassword(password);
+
+            await this.repository.updateOne({ email }, data);
+
+            return new BaseResponse(RET_CODE.SUCCESS, true, 'Password changed successfully');
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }

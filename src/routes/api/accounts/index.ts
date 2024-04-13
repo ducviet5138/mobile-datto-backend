@@ -79,4 +79,29 @@ router.get('/:id/groups', async (req: Request, res: Response) => {
     }
 });
 
+// POST: /api/accounts/signin
+// Desc: Get id account by sign in
+router.post('/signin', async (req: Request, res: Response) => {
+    try {
+        const response = await AccountService.getByUsername(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
+// POST: /api/accounts/resetpassword
+// Desc: Reset password
+router.post('/resetpassword', async (req: Request, res: Response) => {
+    try {
+        // console.log('RS');
+        const response = await AccountService.resetPassword(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
 export default router;
