@@ -65,8 +65,6 @@ class OTPService {
                     `,
             });
 
-            // console.log('Send Ok');
-
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, {
                 _id: data._id,
             });

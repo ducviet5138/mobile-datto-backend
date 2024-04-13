@@ -5,6 +5,7 @@ import eventRoute from './events';
 import otpRoute from './otp';
 import profileRoute from './profiles';
 import groupRoute from './groups';
+import fundRoute from './funds';
 
 const router = Express.Router();
 
@@ -14,5 +15,6 @@ router.use('/events', eventRoute);
 router.use('/otp', otpRoute);
 router.use('/profiles', profileRoute);
 router.use('/groups', groupRoute);
+router.use('/funds', fundRoute);
 
 export default router;

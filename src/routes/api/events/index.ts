@@ -55,6 +55,16 @@ router.patch('/:eventId/funds/:id', async (req: Request, res: Response) => {
     }
 });
 
+router.get('/:id/funds', async (req: Request, res: Response) => {
+    try {
+        const response = await FundService.getAllFunds(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
 // GET /api/events/:id/members
 // Desc: Get event members
 router.get('/:id/members', async (req: Request, res: Response) => {
