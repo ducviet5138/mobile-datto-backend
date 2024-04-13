@@ -3,6 +3,7 @@ import BaseResponse from '@/utils/baseResponse';
 import { RET_CODE, RET_MSG } from '@/utils/returnCode';
 import { Fund, Event, Group } from '@/entities';
 import objectIdConverter from '@/utils/objectIdConverter';
+import e = require('express');
 
 class FundService {
     repository = Fund;
@@ -158,6 +159,36 @@ class FundService {
             return new BaseResponse(RET_CODE.SUCCESS, true, 'Get members successfully', {
                 members: group.members,
             });
+        } catch (_: any) {
+            return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        }
+    }
+
+    async split(req: Request) {
+        try {
+            const eventId = objectIdConverter(req.params.id);
+
+            // Get group containing the event
+            const groupId = (await Group.findOne({ events: { $in: [eventId] } }))._id;
+
+            // Get all members of the group
+            const members = (await Group.findById(groupId)
+                .populate({
+                    path: 'members',
+                    select: 'profile _id',
+                    populate: {
+                        path: 'profile',
+                        select: '_id fullName',
+                    },
+                }))
+                .members
+
+            // Get all funds associated with the event
+            const funds = (await Event.findById(eventId).populate('funds')).funds as any;
+
+            console.log(funds[0].amount)
+        
+            return new BaseResponse(RET_CODE.SUCCESS, true, 'Split funds successfully');
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }

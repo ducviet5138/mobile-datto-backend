@@ -79,9 +79,9 @@ router.get('/:id/groups', async (req: Request, res: Response) => {
     }
 });
 
-// POST: /api/accounts/signin
+// POST: /api/accounts/sign-in
 // Desc: Get id account by sign in
-router.post('/signin', async (req: Request, res: Response) => {
+router.post('/sign-in', async (req: Request, res: Response) => {
     try {
         const response = await AccountService.getByUsername(req);
         res.json(response.getResponse());

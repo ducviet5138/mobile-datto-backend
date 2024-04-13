@@ -130,6 +130,13 @@ class AccountService {
                 return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'All fields are required');
             }
 
+            // Find if username already exists
+            const duplicateUsername = await this.repository.findOne({ username });
+
+            if (duplicateUsername) {
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Username already exists');
+            }
+
             // Just update username in AccountService
             await this.repository.updateOne({ _id: objectIdConverter(id) }, { username });
 

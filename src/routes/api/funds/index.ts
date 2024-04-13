@@ -6,7 +6,7 @@ import FundService from '@/services/fund';
 
 const router = Express.Router();
 
-// Patch: /api/funds/:id
+// PATCH /api/funds/:id
 // Desc: Update profile information (fullName, dob, avatar, groups)
 router.patch('/:id', async (req: Request, res: Response) => {
     try {
@@ -18,7 +18,7 @@ router.patch('/:id', async (req: Request, res: Response) => {
     }
 });
 
-// Get: /api/funds/:id
+// GET /api/funds/:id
 // Desc: Get data of a fund
 router.get('/:id', async (req: Request, res: Response) => {
     try {
@@ -30,7 +30,7 @@ router.get('/:id', async (req: Request, res: Response) => {
     }
 });
 
-// Get: /api/funds/:id/members
+// GET /api/funds/:id/members
 // Desc: Get members associated with a fund
 router.get('/:id/members', async (req: Request, res: Response) => {
     try {
