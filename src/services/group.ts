@@ -109,7 +109,9 @@ class GroupService {
             group.inviteCode = generateInviteCode();
             await this.repository.updateOne({ _id: id }, group);
 
-            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, group.inviteCode);
+            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, {
+                inviteCode: group.inviteCode,
+            });
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }

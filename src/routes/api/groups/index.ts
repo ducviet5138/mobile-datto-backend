@@ -55,9 +55,9 @@ router.patch('/:id', async (req: Request, res: Response) => {
     }
 });
 
-// POST: /api/groups/:id/code-generation
+// GET: /api/groups/:id/code-generation
 // Desc: Generate new invite code
-router.post('/:id/code-generation', async (req: Request, res: Response) => {
+router.get('/:id/code-generation', async (req: Request, res: Response) => {
     try {
         const response = await GroupService.generateInviteCode(req);
         res.json(response.getResponse());
