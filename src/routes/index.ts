@@ -10,6 +10,7 @@ router.use('/api', apiRoutes);
 
 // Undefined routes
 router.use('*', (req: Request, res: Response) => {
+    console.log('?');
     const response = new BaseResponse(RET_CODE.NOT_FOUND, false, RET_MSG.NOT_FOUND);
     res.json(response.getResponse());
 });

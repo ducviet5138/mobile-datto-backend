@@ -9,6 +9,7 @@ const router = Express.Router();
 // POST: /api/otp
 // Desc: Send OTP
 router.post('/', async (req: Request, res: Response) => {
+    // console.log('OK');
     try {
         const response = await OTP.sendOTP(req);
         res.json(response.getResponse());

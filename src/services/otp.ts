@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import BaseResponse from '@/utils/baseResponse';
 import { RET_CODE, RET_MSG } from '@/utils/returnCode';
-import { OTP } from '@/entities';
+import { OTP, Account } from '@/entities';
 import * as nodemailer from 'nodemailer';
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -23,7 +23,17 @@ class OTPService {
 
     async sendOTP(req: Request) {
         try {
-            const { email } = req.body;
+            const { key, email } = req.body;
+
+            // console.log(key, email);
+
+            const existedEmail = await Account.findOne({ email });
+
+            if (key === 'Sign up' && existedEmail) {
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Email already exists');
+            } else if (key === 'Reset password' && !existedEmail) {
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Email does not exist');
+            }
 
             const otp = new OTP({
                 code: generateOTP(),
@@ -43,7 +53,7 @@ class OTPService {
                         <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Datto</a>
                         </div>
                         <p style="font-size:1.1em">Hi,</p>
-                        <p>Thank you for using Datto. Use the following OTP to complete your Sign Up procedures. OTP is valid for 5 minutes</p>
+                        <p>Thank you for using Datto. Use the following OTP to complete your ${key} procedures. OTP is valid for 5 minutes</p>
                         <h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${data.code}</h2>
                         <p style="font-size:0.9em;">Regards,<br />Datto</p>
                         <hr style="border:none;border-top:1px solid #eee" />
@@ -55,7 +65,11 @@ class OTPService {
                     `,
             });
 
-            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data._id);
+            // console.log('Send Ok');
+
+            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, {
+                _id: data._id,
+            });
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
