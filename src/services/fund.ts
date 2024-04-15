@@ -3,8 +3,6 @@ import BaseResponse from '@/utils/baseResponse';
 import { RET_CODE, RET_MSG } from '@/utils/returnCode';
 import { Fund, Event, Group } from '@/entities';
 import objectIdConverter from '@/utils/objectIdConverter';
-import e = require('express');
-import account from './account';
 
 class FundService {
     repository = Fund;
@@ -119,15 +117,14 @@ class FundService {
     async get(req: Request) {
         try {
             const id = objectIdConverter(req.params.id);
-            const fund = await this.repository.findById(id)
-                .populate({
-                    path: 'paidBy',
-                    select: 'profile _id',
-                    populate: {
-                        path: 'profile',
-                        select: '_id fullName',
-                    },
-                });
+            const fund = await this.repository.findById(id).populate({
+                path: 'paidBy',
+                select: 'profile _id',
+                populate: {
+                    path: 'profile',
+                    select: '_id fullName',
+                },
+            });
 
             return new BaseResponse(RET_CODE.SUCCESS, true, 'Get fund successfully', fund);
         } catch (_: any) {
@@ -138,22 +135,21 @@ class FundService {
     async getMembers(req: Request) {
         try {
             const id = objectIdConverter(req.params.id);
-            
+
             // Find a event with funds
             const event = await Event.findOne({ funds: { $in: [id] } });
 
             if (!event) return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find an event');
 
             // Find group with event
-            const group = await Group.findOne({ events: { $in: [event?._id] } })
-                .populate({
-                    path: 'members',
-                    select: 'profile _id',
-                    populate: {
-                        path: 'profile',
-                        select: '_id fullName',
-                    },
-                });
+            const group = await Group.findOne({ events: { $in: [event?._id] } }).populate({
+                path: 'members',
+                select: 'profile _id',
+                populate: {
+                    path: 'profile',
+                    select: '_id fullName',
+                },
+            });
 
             if (!group) return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find a group');
 
@@ -173,51 +169,37 @@ class FundService {
             const groupId = (await Group.findOne({ events: { $in: [eventId] } }))._id;
 
             // Get all members of the group
-            const members = (await Group.findById(groupId)
-                .populate({
+            const members = (
+                await Group.findById(groupId).populate({
                     path: 'members',
                     select: 'profile _id',
                     populate: {
                         path: 'profile',
                         select: '_id fullName',
                     },
-                }))
-                .members as any;
+                })
+            ).members as any;
 
-            // Get all funds associated with the event
-            // const funds = (await Event.findById(eventId)
-            //     .populate({
-            //         path: 'funds',
-            //         populate: {
-            //             path: 'paidBy',
-            //             select: 'profile _id',
-            //             populate: {
-            //                 path: 'profile',
-            //                 select: '_id fullName',
-            //             },
-            //         }, 
-            //     }))
-            //     .funds as any;
             const funds = (await Event.findById(eventId).populate('funds')).funds as any;
 
             // Calculate the total expense amount
             let totalExpense = 0;
 
-            for (let fund of funds) 
+            for (const fund of funds)
                 if (fund.amount < 0) {
-                    totalExpense += Math.abs(fund.amount);
+                    totalExpense += fund.amount;
                 }
 
             // Average the total expense amount
-            const averageExpense = totalExpense / members.length;   
+            const averageExpense = totalExpense / members.length;
 
             // Create an array to store the amount of money each member has to pay
             const resAmountToPay = new Array(members.length).fill(averageExpense);
-            
+
             for (let index = 0; index < members.length; index++) {
-                for (let fund of funds) {
+                for (const fund of funds) {
                     if (fund.amount > 0 && fund.paidBy.toString() == members[index]._id.toString()) {
-                        resAmountToPay[index] -= fund.amount;
+                        resAmountToPay[index] += fund.amount;
                     }
                 }
             }

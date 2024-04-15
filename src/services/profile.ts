@@ -12,7 +12,7 @@ class ProfileService {
             const { fullName } = req.body;
 
             const profile = new Profile();
-            profile.fullName = fullName? fullName: "";
+            profile.fullName = fullName ? fullName : '';
             profile.dob = new Date('1970-01-01');
             profile.avatar = null;
 
