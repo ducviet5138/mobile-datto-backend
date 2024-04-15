@@ -4,6 +4,7 @@ import { RET_CODE, RET_MSG } from '@/utils/returnCode';
 import { Fund, Event, Group } from '@/entities';
 import objectIdConverter from '@/utils/objectIdConverter';
 import e = require('express');
+import account from './account';
 
 class FundService {
     repository = Fund;
@@ -181,14 +182,55 @@ class FundService {
                         select: '_id fullName',
                     },
                 }))
-                .members
+                .members as any;
 
             // Get all funds associated with the event
+            // const funds = (await Event.findById(eventId)
+            //     .populate({
+            //         path: 'funds',
+            //         populate: {
+            //             path: 'paidBy',
+            //             select: 'profile _id',
+            //             populate: {
+            //                 path: 'profile',
+            //                 select: '_id fullName',
+            //             },
+            //         }, 
+            //     }))
+            //     .funds as any;
             const funds = (await Event.findById(eventId).populate('funds')).funds as any;
 
-            console.log(funds[0].amount)
-        
-            return new BaseResponse(RET_CODE.SUCCESS, true, 'Split funds successfully');
+            // Calculate the total expense amount
+            let totalExpense = 0;
+
+            for (let fund of funds) 
+                if (fund.amount < 0) {
+                    totalExpense += Math.abs(fund.amount);
+                }
+
+            // Average the total expense amount
+            const averageExpense = totalExpense / members.length;   
+
+            // Create an array to store the amount of money each member has to pay
+            const resAmountToPay = new Array(members.length).fill(averageExpense);
+            
+            for (let index = 0; index < members.length; index++) {
+                for (let fund of funds) {
+                    if (fund.amount > 0 && fund.paidBy.toString() == members[index]._id.toString()) {
+                        resAmountToPay[index] -= fund.amount;
+                    }
+                }
+            }
+
+            // Map member with amount to pay
+            const res = members.map((member: any, index: number) => ({
+                account: member,
+                amount: resAmountToPay[index],
+            }));
+
+            return new BaseResponse(RET_CODE.SUCCESS, true, 'Split funds successfully', {
+                data: res,
+            });
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
