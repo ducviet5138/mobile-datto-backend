@@ -105,7 +105,8 @@ class TimelineService {
                 const timelineId = objectIdConverter(req.params.id);
 
                 const timeline = await this.repository.findById(timelineId);
-                if (!timeline) return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find a timeline with id ' + timelineId);
+                if (!timeline)
+                    return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find a timeline with id ' + timelineId);
 
                 return new BaseResponse(RET_CODE.SUCCESS, true, 'Timeline found', timeline);
             } else {

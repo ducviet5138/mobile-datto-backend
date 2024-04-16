@@ -91,11 +91,10 @@ router.post('/sign-in', async (req: Request, res: Response) => {
     }
 });
 
-// POST: /api/accounts/resetpassword
+// POST: /api/accounts/reset-password
 // Desc: Reset password
-router.post('/resetpassword', async (req: Request, res: Response) => {
+router.post('/reset-password', async (req: Request, res: Response) => {
     try {
-        // console.log('RS');
         const response = await AccountService.resetPassword(req);
         res.json(response.getResponse());
     } catch (_: any) {

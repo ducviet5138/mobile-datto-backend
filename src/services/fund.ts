@@ -18,11 +18,11 @@ class FundService {
             const { paidBy, amount, info, paidAt } = req.body;
 
             // Check valid data
-            if (!paidBy || !amount || !info || !paidAt)
+            if (paidBy === undefined || paidBy === null || !amount || !info || !paidAt)
                 return new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);
 
             const fund = new Fund({
-                paidBy: objectIdConverter(paidBy),
+                paidBy: paidBy === '' ? null : objectIdConverter(paidBy),
                 amount,
                 info,
                 paidAt: new Date(paidAt),
@@ -95,19 +95,54 @@ class FundService {
             if (!event) return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find an event');
 
             // Get all funds with account and populate 'paidBy' and 'paidBy.profile'
-            const funds = await Fund.find({ _id: { $in: event.funds } })
-                .populate({
-                    path: 'paidBy',
-                    select: 'profile _id',
-                    populate: {
-                        path: 'profile',
-                        select: '_id fullName',
-                    },
-                })
-                .sort({ paidAt: -1 });
+            const funds = await Fund.find({ _id: { $in: event.funds } }).populate({
+                path: 'paidBy',
+                select: 'profile _id',
+                populate: {
+                    path: 'profile',
+                    select: '_id fullName',
+                },
+            });
+
+            // Sort by 'paidAt' and then by 'amount'
+            funds.sort((a, b) => {
+                if (a.paidAt < b.paidAt) {
+                    return 1;
+                } else if (a.paidAt > b.paidAt) {
+                    return -1;
+                } else {
+                    if (a.amount < 0 && b.amount >= 0) {
+                        return -1;
+                    } else if (a.amount >= 0 && b.amount < 0) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                }
+            });
+
+            // Create virtual profile for "Budget" user
+            const formattedFunds = [];
+
+            for (const fund of funds)
+                if (!fund.paidBy) {
+                    formattedFunds.push({
+                        _id: fund._id,
+                        paidBy: {
+                            _id: null,
+                            profile: {
+                                _id: null,
+                                fullName: 'Budget',
+                            },
+                        },
+                        amount: fund.amount,
+                        info: fund.info,
+                        paidAt: fund.paidAt,
+                    });
+                } else formattedFunds.push(fund);
 
             return new BaseResponse(RET_CODE.SUCCESS, true, 'Get funds successfully', {
-                funds,
+                funds: formattedFunds,
             });
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
@@ -175,7 +210,7 @@ class FundService {
                     select: 'profile _id',
                     populate: {
                         path: 'profile',
-                        select: '_id fullName',
+                        select: '_id fullName avatar',
                     },
                 })
             ).members as any;
@@ -210,8 +245,18 @@ class FundService {
                 amount: resAmountToPay[index],
             }));
 
+            // Calculate the remaining funds
+            let remainingFunds = 0;
+            for (const fund of funds) {
+                if (fund.amount > 0) {
+                    remainingFunds += fund.amount;
+                }
+            }
+            remainingFunds -= totalExpense;
+
             return new BaseResponse(RET_CODE.SUCCESS, true, 'Split funds successfully', {
                 data: res,
+                remainingFunds,
             });
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);

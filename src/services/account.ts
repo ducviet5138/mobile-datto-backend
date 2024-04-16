@@ -180,7 +180,6 @@ class AccountService {
             const { email, password } = req.body;
 
             const data = await this.repository.findOne({ email });
-            // console.log('RS:', data);
             if (!data) {
                 return new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);
             }

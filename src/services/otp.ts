@@ -25,8 +25,6 @@ class OTPService {
         try {
             const { key, email } = req.body;
 
-            // console.log(key, email);
-
             const existedEmail = await Account.findOne({ email });
 
             if (key === 'Sign up' && existedEmail) {
