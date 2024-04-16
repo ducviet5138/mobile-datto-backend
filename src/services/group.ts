@@ -146,11 +146,13 @@ class GroupService {
         try {
             const accountId = objectIdConverter(req.params.id);
 
-            const data = await this.repository.find({
-                members: {
-                    $in: accountId,
-                },
-            });
+            const data = await this.repository
+                .find({
+                    members: {
+                        $in: accountId,
+                    },
+                })
+                .populate('events');
 
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data);
         } catch (_: any) {
