@@ -8,11 +8,14 @@ const TimelineSchema = new mongoose.Schema(
         location: {
             type: Object,
         },
-        startTime: {
+        start: {
             type: Date,
         },
-        duration: {
+        end: {
             type: Date,
+        },
+        description: {
+            type: String,
         },
     },
     {
