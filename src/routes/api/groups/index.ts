@@ -4,6 +4,7 @@ import BaseResponse from '@/utils/baseResponse';
 import { RET_CODE, RET_MSG } from '@/utils/returnCode';
 import GroupService from '@/services/group';
 import EventService from '@/services/event';
+import MemoryService from '@/services/memory';
 
 const router = Express.Router();
 
@@ -96,6 +97,66 @@ router.get('/:id/events', async (req: Request, res: Response) => {
 router.post('/:id/events', async (req: Request, res: Response) => {
     try {
         const response = await EventService.create(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
+// GET /api/groups/:id/memories
+// Desc: Get group memories
+router.get('/:groupId/memories/', async (req: Request, res: Response) => {
+    try {
+        const response = await MemoryService.getAll(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
+// GET /api/groups/:id/memories/:id
+// Desc: Get a single memory
+router.get('/:groupId/memories/:id', async (req: Request, res: Response) => {
+    try {
+        const response = await MemoryService.get(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
+// POST /api/groups/:id/memories
+// Desc: Create a new memory
+router.post('/:groupId/memories/', async (req: Request, res: Response) => {
+    try {
+        const response = await MemoryService.create(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
+// PATCH /api/groups/:id/memories/:id
+// Desc: Update a memory
+router.patch('/:groupId/memories/:id', async (req: Request, res: Response) => {
+    try {
+        const response = await MemoryService.patch(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
+// DELETE /api/groups/:id/memories/:id
+// Desc: Delete a memory
+router.delete('/:groupId/memories/:id', async (req: Request, res: Response) => {
+    try {
+        const response = await MemoryService.delete(req);
         res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
