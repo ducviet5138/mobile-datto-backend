@@ -6,9 +6,11 @@ const CalendarSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Account',
         },
-        time: {
-            type: Object,
-        },
+        time: [
+            {
+                type: Date,
+            },
+        ],
     },
     {
         versionKey: false,

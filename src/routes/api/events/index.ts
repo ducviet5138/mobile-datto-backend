@@ -5,6 +5,7 @@ import { RET_CODE, RET_MSG } from '@/utils/returnCode';
 import FundService from '@/services/fund';
 import EventService from '@/services/event';
 import TimelineService from '@/services/timeline';
+import CalendarService from '@/services/calendar';
 
 const router = Express.Router();
 
@@ -145,6 +146,30 @@ router.patch('/:eventId/timeline/:id', async (req: Request, res: Response) => {
 router.delete('/:eventId/timeline/:id', async (req: Request, res: Response) => {
     try {
         const response = await TimelineService.delete(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
+// GET /api/events/:eventId/calendars
+// Desc: Get all calendar objects
+router.get('/:eventId/calendars', async (req: Request, res: Response) => {
+    try {
+        const response = await CalendarService.get(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
+// POST /api/events/:eventId/calendars
+// Desc: Create a new calendar object
+router.post('/:eventId/calendars', async (req: Request, res: Response) => {
+    try {
+        const response = await CalendarService.post(req);
         res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
