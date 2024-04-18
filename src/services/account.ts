@@ -133,7 +133,7 @@ class AccountService {
             // Find if username already exists
             const duplicateUsername = await this.repository.findOne({ username });
 
-            if (duplicateUsername) {
+            if (duplicateUsername && duplicateUsername._id.toString() !== id) {
                 return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Username already exists');
             }
 
