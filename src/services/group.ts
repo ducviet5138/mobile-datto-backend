@@ -178,6 +178,26 @@ class GroupService {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
     }
+
+    async deleteMember(req: Request) {
+        try {
+            const { groupId, memberId } = req.params;
+
+            const group = await this.repository.findById(objectIdConverter(groupId));
+
+            if (!group) {
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Group not found');
+            }
+
+            group.members = group.members.filter((member) => member.toString() !== memberId);
+
+            await this.repository.updateOne({ _id: groupId }, group);
+
+            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS);
+        } catch (_: any) {
+            return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        }
+    }
 }
 
 export default new GroupService();

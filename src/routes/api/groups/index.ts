@@ -104,6 +104,30 @@ router.post('/:id/events', async (req: Request, res: Response) => {
     }
 });
 
+// DELETE /api/groups/:groupId/members/:memberId
+// Desc: Delete members from a group
+router.delete('/:groupId/members/:memberId', async (req: Request, res: Response) => {
+    try {
+        const response = await GroupService.deleteMember(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
+// DELETE /api/groups/:groupId/members/:memberId
+// Desc: Delete members from a group
+router.delete('/:groupId/members/:memberId', async (req: Request, res: Response) => {
+    try {
+        const response = await GroupService.deleteMember(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
 // GET /api/groups/:id/memories
 // Desc: Get group memories
 router.get('/:groupId/memories/', async (req: Request, res: Response) => {
