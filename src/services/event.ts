@@ -85,6 +85,30 @@ class EventService {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
     }
+
+    async patchEventInfo(req: Request) {
+        try {
+            const id = objectIdConverter(req.params.id);
+
+            const { name, start, end } = req.body;
+
+            const data = await this.repository.findById({ _id: id });
+
+            if (!data) {
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Event not found');
+            }
+
+            data.name = name || data.name;
+            if (start) data.time.start = new Date(start);
+            if (end) data.time.end = new Date(end);
+
+            await this.repository.updateOne({ _id: id }, data);
+
+            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS);
+        } catch (_: any) {
+            return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        }
+    }
 }
 
 export default new EventService();

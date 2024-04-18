@@ -177,4 +177,16 @@ router.post('/:eventId/calendars', async (req: Request, res: Response) => {
     }
 });
 
+// PATCH /api/events/:id
+// Desc: Update event information
+router.patch('/:id', async (req: Request, res: Response) => {
+    try {
+        const response = await EventService.patchEventInfo(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
 export default router;
