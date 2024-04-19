@@ -103,4 +103,16 @@ router.post('/reset-password', async (req: Request, res: Response) => {
     }
 });
 
+// POST: /api/accounts/auth-google
+// Desc: Reset password
+router.post('/auth-google', async (req: Request, res: Response) => {
+    try {
+        const response = await AccountService.authByGoogle(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
 export default router;
