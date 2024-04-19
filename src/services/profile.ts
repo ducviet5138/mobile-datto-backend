@@ -6,9 +6,9 @@ import objectIdConverter from '@/utils/objectIdConverter';
 import axios from 'axios';
 import * as fs from 'fs';
 
-const uploadFromUrl = async (url: string): Promise<string> => {
+const uploadFromUrl = async (url: string, fileName: string): Promise<string> => {
     const response = await axios.get(url, { responseType: 'stream' });
-    const filePath = `./my_bucket/temp_${Date.now()}.png`;
+    const filePath = `./my_bucket/${fileName}`;
     const writer = fs.createWriteStream(filePath);
     response.data.pipe(writer);
 
@@ -18,10 +18,12 @@ const uploadFromUrl = async (url: string): Promise<string> => {
     });
 
     const bucket = new Bucket({
-        fileName: `temp_${Date.now()}.png`,
+        fileName: fileName,
     });
 
     const entity = await bucket.save();
+    const newFilePath = `./my_bucket/${entity._id.toHexString()}`;
+    fs.renameSync(filePath, newFilePath);
 
     return entity._id.toHexString();
 };
@@ -31,14 +33,14 @@ class ProfileService {
 
     async createWithFullName(req: Request) {
         try {
-            const { fullName, avatar } = req.body;
+            const { fullName, avatar, googleId } = req.body;
             console.log(fullName);
             const profile = new Profile();
             profile.fullName = fullName ? fullName : '';
             profile.dob = new Date('1970-01-01');
             console.log(avatar);
-            if (avatar) {
-                const avatarFilename = await uploadFromUrl(avatar);
+            if (avatar && googleId) {
+                const avatarFilename = await uploadFromUrl(avatar, googleId);
                 profile.avatar = objectIdConverter(avatarFilename);
             } else {
                 profile.avatar = null;
