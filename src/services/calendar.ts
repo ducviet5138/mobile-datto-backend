@@ -18,11 +18,13 @@ class CalendarService {
             const { createdBy, time } = req.body;
 
             // Check valid data
-            if (!createdBy || !time)
-                return new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);
+            if (!createdBy || !time) return new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);
 
             // search for existing calendar in the current event
-            const existingCalendar = await this.repository.findOne({ createdBy: objectIdConverter(createdBy), _id: { $in: event.calendars } });
+            const existingCalendar = await this.repository.findOne({
+                createdBy: objectIdConverter(createdBy),
+                _id: { $in: event.calendars },
+            });
 
             if (existingCalendar) {
                 // Update calendar
@@ -58,10 +60,11 @@ class CalendarService {
             const event = await Event.findById(eventId);
             if (!event) return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find event with id ' + eventId);
 
-            if(req.params.id) {
+            if (req.params.id) {
                 // Get calendar by id in the event
                 const calendar = await this.repository.findOne({ _id: objectIdConverter(req.params.id) });
-                if (!calendar) return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find calendar with id ' + req.params.id);
+                if (!calendar)
+                    return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find calendar with id ' + req.params.id);
                 return new BaseResponse(RET_CODE.SUCCESS, true, 'Calendar found', calendar);
             } else {
                 // Get all calendars in the event

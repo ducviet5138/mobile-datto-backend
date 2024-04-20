@@ -252,7 +252,7 @@ class FundService {
                     remainingFunds += fund.amount;
                 }
             }
-            remainingFunds -= totalExpense;
+            remainingFunds += totalExpense;
 
             return new BaseResponse(RET_CODE.SUCCESS, true, 'Split funds successfully', {
                 data: res,

@@ -34,11 +34,9 @@ class ProfileService {
     async createWithFullName(req: Request) {
         try {
             const { fullName, avatar, googleId } = req.body;
-            console.log(fullName);
             const profile = new Profile();
             profile.fullName = fullName ? fullName : '';
             profile.dob = new Date('1970-01-01');
-            console.log(avatar);
             if (avatar && googleId) {
                 const avatarFilename = await uploadFromUrl(avatar, googleId);
                 profile.avatar = objectIdConverter(avatarFilename);
