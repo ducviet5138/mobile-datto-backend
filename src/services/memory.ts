@@ -18,10 +18,8 @@ class MemoryService {
             const { thumbnail, info } = req.body;
 
             // Check valid data
-            if (!thumbnail || !info)
-                return new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);
+            if (!thumbnail || !info) return new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);
 
-        
             const memory = new Memory({
                 thumbnail,
                 info,
@@ -52,8 +50,7 @@ class MemoryService {
             const { thumbnail, info } = req.body;
 
             // Check valid data
-            if (!thumbnail || !info)
-                return new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);
+            if (!thumbnail || !info) return new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);
 
             // Update memory
             await this.repository.findByIdAndUpdate(id, {
@@ -80,7 +77,6 @@ class MemoryService {
             if (!memory) return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find memory with id ' + id);
 
             return new BaseResponse(RET_CODE.SUCCESS, true, 'Get single memories', memory);
-         
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }

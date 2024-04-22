@@ -74,6 +74,9 @@ class AccountService {
             // Remove password field
             data.password = undefined;
 
+            // Remove googleId field
+            data.googleId = undefined;
+
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data);
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
@@ -167,6 +170,43 @@ class AccountService {
             // Remove password field
             account.password = undefined;
 
+            // Remove googleId field
+            account.googleId = undefined;
+
+            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, {
+                _id: account._id,
+            });
+        } catch (error) {
+            return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        }
+    }
+
+    async authByGoogle(req: Request) {
+        try {
+            const { email, googleId } = req.body;
+            let account = await this.repository.findOne({ email });
+
+            if (!account) {
+                //Sign up
+                //Create a account with email, fullName, googleId, avatar and generate a new password for this account
+                //Return id of new account
+                const profileResponse = await ProfileService.createWithFullName(req);
+                const randomPassword = Math.random().toString(36).slice(-8);
+                account = new Account({
+                    username: email,
+                    email,
+                    password: hashPassword(randomPassword),
+                    profile: profileResponse,
+                    googleId,
+                });
+                await account.save();
+            } else if (!account.googleId) {
+                //The account exist but it has not connected with Google Account
+                //update googleID for this account
+                account.googleId = googleId;
+                await account.save();
+            }
+            //Sign in
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, {
                 _id: account._id,
             });
