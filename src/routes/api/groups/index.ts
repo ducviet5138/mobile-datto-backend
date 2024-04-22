@@ -188,4 +188,16 @@ router.delete('/:groupId/memories/:id', async (req: Request, res: Response) => {
     }
 });
 
+// GET /api/groups/:id/funds
+// Desc: Get group funds
+router.get('/:id/funds/', async (req: Request, res: Response) => {
+    try {
+        const response = await GroupService.getGroupFunds(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
 export default router;

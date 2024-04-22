@@ -198,6 +198,28 @@ class GroupService {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
     }
+
+    async getGroupFunds(req: Request) {
+        try {
+            const id = objectIdConverter(req.params.id);
+
+            const data = await this.repository.findById({ _id: id }).populate({
+                path: 'events',
+                populate: {
+                    path: 'funds',
+                    select: '_id amount paidAt',
+                }
+            });
+
+            if (!data) {
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Group not found');
+            }
+
+            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data.events);
+        } catch (_: any) {
+            return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        }
+    }
 }
 
 export default new GroupService();
