@@ -5,6 +5,7 @@ import { Account } from '@/entities';
 import ProfileService from '@/services/profile';
 import hashPassword from '@/utils/hashPassword';
 import objectIdConverter from '@/utils/objectIdConverter';
+import generateJWTToken from '@/utils/generateJWTToken';
 
 class AccountService {
     repository = Account;
@@ -173,8 +174,11 @@ class AccountService {
             // Remove googleId field
             account.googleId = undefined;
 
+            // Return JWT token
+            const token = generateJWTToken({ _id: account._id.toString() });
+
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, {
-                _id: account._id,
+                token,
             });
         } catch (error) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
@@ -206,9 +210,12 @@ class AccountService {
                 account.googleId = googleId;
                 await account.save();
             }
+            // Return JWT token
+            const token = generateJWTToken({ _id: account._id.toString() });
+
             //Sign in
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, {
-                _id: account._id,
+                token,
             });
         } catch (error) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
