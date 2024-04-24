@@ -57,10 +57,10 @@ app.use((req: Request, res: Response, next) => {
         return;
     }
 
-    // Check if token is not expired
+    // Check if token is invalid or not
     jwt.verify(token as string, process.env.JWT_SECRET, (err: any) => {
         if (err) {
-            const response = new BaseResponse(RET_CODE.UNAUTHORIZED, false, 'Token expired');
+            const response = new BaseResponse(RET_CODE.UNAUTHORIZED, false, 'Token is invalid');
             res.json(response.getResponse());
         } else {
             next();
