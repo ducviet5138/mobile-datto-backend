@@ -37,12 +37,13 @@ const whitelist = [
     '/api/accounts/auth-google',
     '/api/otp',
     '/api/otp/verification',
+    '/api/files'
 ];
 
 // Middleware to check JWT token
 app.use((req: Request, res: Response, next) => {
     // Check if route is in whitelist
-    if (whitelist.includes(req.originalUrl)) {
+    if (whitelist.find((path) => req.originalUrl.includes(path))) {
         next();
         return;
     }
