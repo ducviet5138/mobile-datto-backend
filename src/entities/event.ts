@@ -29,6 +29,10 @@ const EventSchema = new mongoose.Schema(
         description: {
             type: String,
         },
+        memory: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Memory',
+        }
     },
     {
         versionKey: false,

@@ -24,12 +24,6 @@ const GroupSchema = new mongoose.Schema(
                 ref: 'Event',
             },
         ],
-        memories: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Memory',
-            },
-        ],
     },
     {
         versionKey: false,

@@ -8,6 +8,9 @@ const MemorySchema = new mongoose.Schema(
         info: {
             type: String,
         },
+        date: {
+            type: Date,
+        },
     },
     {
         versionKey: false,

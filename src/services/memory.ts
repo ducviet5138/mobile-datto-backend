@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import BaseResponse from '@/utils/baseResponse';
 import { RET_CODE, RET_MSG } from '@/utils/returnCode';
-import { Group, Memory } from '@/entities';
+import { Group, Memory, Event } from '@/entities';
 import objectIdConverter from '@/utils/objectIdConverter';
 
 class MemoryService {
@@ -9,28 +9,29 @@ class MemoryService {
 
     async create(req: Request) {
         try {
-            const groupId = objectIdConverter(req.params.groupId);
+            const eventId = objectIdConverter(req.params.id);
 
-            // Get group
-            const group = await Group.findById(groupId);
-            if (!group) return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find group with id ' + groupId);
+            // Get event
+            const event = await Event.findById(eventId);
+            if (!event) return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find event with id ' + eventId);
 
-            const { thumbnail, info } = req.body;
+            const { thumbnail, info, date } = req.body;
 
             // Check valid data
-            if (!thumbnail || !info) return new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);
+            if (!thumbnail || !info || !date) return new BaseResponse(RET_CODE.BAD_REQUEST, false, RET_MSG.BAD_REQUEST);
 
             const memory = new Memory({
                 thumbnail,
                 info,
+                date,
             });
 
             // Save memory
             const data = await memory.save();
 
             // Append new data to group
-            group.memories.push(data._id);
-            await group.save();
+            event.memory = data._id;
+            await event.save();
 
             return new BaseResponse(RET_CODE.SUCCESS, true, 'New memory object added');
         } catch (_: any) {
@@ -66,13 +67,8 @@ class MemoryService {
 
     async get(req: Request) {
         try {
-            const groupId = objectIdConverter(req.params.groupId);
-
-            // Get group
-            const group = await Group.findById(groupId);
-            if (!group) return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find group with id ' + groupId);
-
             const id = objectIdConverter(req.params.id);
+
             const memory = await this.repository.findById(id);
             if (!memory) return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find memory with id ' + id);
 
@@ -90,7 +86,9 @@ class MemoryService {
             const group = await Group.findById(groupId);
             if (!group) return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find group with id ' + groupId);
 
-            const memories = (await this.repository.find({ _id: { $in: group.memories } })).reverse();
+            const events = await Event.find({ _id: { $in: group.events } });
+            const memories = await this.repository.find({ _id: { $in: events.map((event) => event.memory) } });
+
             return new BaseResponse(RET_CODE.SUCCESS, true, 'Get all memories', memories);
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
@@ -99,21 +97,15 @@ class MemoryService {
 
     async delete(req: Request) {
         try {
-            const groupId = objectIdConverter(req.params.groupId);
-
-            // Get group
-            const group = await Group.findById(groupId);
-            if (!group) return new BaseResponse(RET_CODE.ERROR, false, 'Cannot find group with id ' + groupId);
-
             const id = objectIdConverter(req.params.id);
 
             // Delete memory
             await this.repository.findByIdAndDelete(id);
 
-            // Remove memory from group
-            group.memories = group.memories.filter((memory) => memory.toString() != id.toString());
-
-            await group.save();
+            // Remove memory from event
+            const event = await Event.findOne({ memory: id });
+            event.memory = undefined;
+            await event.save();
 
             return new BaseResponse(RET_CODE.SUCCESS, true, 'Memory deleted');
         } catch (_: any) {

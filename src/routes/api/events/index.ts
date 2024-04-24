@@ -6,6 +6,7 @@ import FundService from '@/services/fund';
 import EventService from '@/services/event';
 import TimelineService from '@/services/timeline';
 import CalendarService from '@/services/calendar';
+import MemoryService from '@/services/memory';
 
 const router = Express.Router();
 
@@ -182,6 +183,18 @@ router.post('/:eventId/calendars', async (req: Request, res: Response) => {
 router.patch('/:id', async (req: Request, res: Response) => {
     try {
         const response = await EventService.patchEventInfo(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
+// POST /api/events/:id/memories
+// Desc: Create a new memory
+router.post('/:id/memories', async (req: Request, res: Response) => {
+    try {
+        const response = await MemoryService.create(req);
         res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);

@@ -166,7 +166,7 @@ class GroupService {
 
             const data = await this.repository.findById({ _id: id }).populate({
                 path: 'events',
-                select: '_id name time description',
+                select: '_id name time description memory',
             });
 
             if (!data) {
