@@ -19,4 +19,16 @@ router.post('/', async (req: Request, res: Response) => {
     }
 });
 
+// GET: /api/notifications/:id
+// Desc: Get notifications of user
+router.get('/:id', async (req: Request, res: Response) => {
+    try {
+        const response = await Notification.getNotifications(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
 export default router;
