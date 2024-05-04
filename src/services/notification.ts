@@ -15,6 +15,7 @@ class NotificationService {
                 topic: message.topic,
                 title: message.notification.title,
                 body: message.notification.body,
+                sendAt: message.sendAt === 'now' ? new Date() : new Date(message.sendAt),
             });
             await notification.save();
             if (message.sendAt === 'now') {
@@ -44,9 +45,14 @@ class NotificationService {
             });
 
             const notifications = await Notification.find({
-                topic: {
-                    $in: groups.map((group) => group._id.toString()),
-                },
+                $or: [
+                    { topic: 'everyone' },
+                    {
+                        topic: {
+                            $in: groups.map((group) => group._id.toString()),
+                        },
+                    },
+                ],
             });
 
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, notifications);

@@ -14,6 +14,10 @@ const NotificationSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        sendAt: {
+            type: Date,
+            required: true,
+        },
     },
     {
         versionKey: false,
