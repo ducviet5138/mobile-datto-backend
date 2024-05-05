@@ -27,6 +27,7 @@ class GroupService {
 
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, {
                 inviteCode: data.inviteCode,
+                groupId: data._id,
             });
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
@@ -109,7 +110,9 @@ class GroupService {
             group.inviteCode = generateInviteCode();
             await this.repository.updateOne({ _id: id }, group);
 
-            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, group.inviteCode);
+            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, {
+                inviteCode: group.inviteCode,
+            });
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
@@ -134,7 +137,9 @@ class GroupService {
 
             await this.repository.updateOne({ inviteCode }, data);
 
-            return new BaseResponse(RET_CODE.SUCCESS, true, 'Joined group successfully');
+            return new BaseResponse(RET_CODE.SUCCESS, true, 'Joined group successfully', {
+                id: data._id,
+            });
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
@@ -144,13 +149,76 @@ class GroupService {
         try {
             const accountId = objectIdConverter(req.params.id);
 
-            const data = await this.repository.find({
-                members: {
-                    $in: accountId,
+            const data = await this.repository
+                .find({
+                    members: {
+                        $in: accountId,
+                    },
+                })
+                .populate('events');
+
+            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data);
+        } catch (_: any) {
+            return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        }
+    }
+
+    async getGroupEvents(req: Request) {
+        try {
+            const id = objectIdConverter(req.params.id);
+
+            const data = await this.repository.findById({ _id: id }).populate({
+                path: 'events',
+                select: '_id name time description memory',
+            });
+
+            if (!data) {
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Event not found');
+            }
+
+            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data.events);
+        } catch (_: any) {
+            return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        }
+    }
+
+    async deleteMember(req: Request) {
+        try {
+            const { groupId, memberId } = req.params;
+
+            const group = await this.repository.findById(objectIdConverter(groupId));
+
+            if (!group) {
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Group not found');
+            }
+
+            group.members = group.members.filter((member) => member.toString() !== memberId);
+
+            await this.repository.updateOne({ _id: groupId }, group);
+
+            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS);
+        } catch (_: any) {
+            return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        }
+    }
+
+    async getGroupFunds(req: Request) {
+        try {
+            const id = objectIdConverter(req.params.id);
+
+            const data = await this.repository.findById({ _id: id }).populate({
+                path: 'events',
+                populate: {
+                    path: 'funds',
+                    select: '_id amount paidAt',
                 },
             });
 
-            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data);
+            if (!data) {
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Group not found');
+            }
+
+            return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, data.events);
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }

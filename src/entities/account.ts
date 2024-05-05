@@ -18,6 +18,10 @@ const AccountSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Profile',
         },
+        googleId: {
+            type: String,
+            default: undefined,
+        },
     },
     {
         versionKey: false,

@@ -21,13 +21,7 @@ const GroupSchema = new mongoose.Schema(
         events: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: Event,
-            },
-        ],
-        memories: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Memory',
+                ref: 'Event',
             },
         ],
     },

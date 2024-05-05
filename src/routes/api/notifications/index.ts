@@ -2,15 +2,16 @@ import * as Express from 'express';
 import { Request, Response } from 'express';
 import BaseResponse from '@/utils/baseResponse';
 import { RET_CODE, RET_MSG } from '@/utils/returnCode';
-import OTP from '@/services/otp';
+import Notification from '@/services/notification';
 
 const router = Express.Router();
 
-// POST: /api/otp
-// Desc: Send OTP
+// POST: /api/notifications
+// Desc: Send a notification to firebase
 router.post('/', async (req: Request, res: Response) => {
     try {
-        const response = await OTP.sendOTP(req);
+        console.log('Notification:', req.body);
+        const response = await Notification.composeNotification(req);
         res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
@@ -18,11 +19,11 @@ router.post('/', async (req: Request, res: Response) => {
     }
 });
 
-// POST: /api/otp/verification
-// Desc: Verify OTP
-router.post('/verification', async (req: Request, res: Response) => {
+// GET: /api/notifications/:id
+// Desc: Get notifications of user
+router.get('/:id', async (req: Request, res: Response) => {
     try {
-        const response = await OTP.verifyOTP(req);
+        const response = await Notification.getNotifications(req);
         res.json(response.getResponse());
     } catch (_: any) {
         const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);

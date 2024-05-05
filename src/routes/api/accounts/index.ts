@@ -79,4 +79,40 @@ router.get('/:id/groups', async (req: Request, res: Response) => {
     }
 });
 
+// POST: /api/accounts/sign-in
+// Desc: Get id account by sign in
+router.post('/sign-in', async (req: Request, res: Response) => {
+    try {
+        const response = await AccountService.getByUsername(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
+// POST: /api/accounts/reset-password
+// Desc: Reset password
+router.post('/reset-password', async (req: Request, res: Response) => {
+    try {
+        const response = await AccountService.resetPassword(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
+// POST: /api/accounts/auth-google
+// Desc: Reset password
+router.post('/auth-google', async (req: Request, res: Response) => {
+    try {
+        const response = await AccountService.authByGoogle(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
 export default router;
