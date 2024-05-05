@@ -53,7 +53,7 @@ class NotificationService {
                         },
                     },
                 ],
-            });
+            }).sort({ sendAt: -1 });
 
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, notifications);
         } catch (_: any) {
