@@ -37,7 +37,8 @@ const whitelist = [
     '/api/accounts/auth-google',
     '/api/otp',
     '/api/otp/verification',
-    '/api/files'
+    '/api/files',
+    '/api/accounts'
 ];
 
 // Middleware to check JWT token

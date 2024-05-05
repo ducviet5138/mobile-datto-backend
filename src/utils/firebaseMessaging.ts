@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 
-var serviceAccount = require('@/utils/datto-65a5b-firebase-adminsdk-jxz2u-3597bc2bb8.json');
+const serviceAccount = require('@/utils/datto-65a5b-firebase-adminsdk-jxz2u-3597bc2bb8.json');
 admin.initializeApp({
     credential: admin.credential.cert({
         projectId: serviceAccount.project_id,

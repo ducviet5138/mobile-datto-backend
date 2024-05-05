@@ -10,7 +10,6 @@ const router = Express.Router();
 // Desc: Send a notification to firebase
 router.post('/', async (req: Request, res: Response) => {
     try {
-        console.log('Notification:', req.body);
         const response = await Notification.composeNotification(req);
         res.json(response.getResponse());
     } catch (_: any) {

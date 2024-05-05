@@ -32,7 +32,7 @@ const EventSchema = new mongoose.Schema(
         memory: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Memory',
-        }
+        },
     },
     {
         versionKey: false,

@@ -40,8 +40,11 @@ class AccountService {
 
             const data = await account.save();
 
+            // Return data token
+            const token = generateJWTToken({ _id: data._id.toString() });
+
             return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, {
-                _id: data._id,
+                token,
             });
         } catch (_: any) {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);

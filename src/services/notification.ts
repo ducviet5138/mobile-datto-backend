@@ -28,7 +28,6 @@ class NotificationService {
                 return new BaseResponse(RET_CODE.SUCCESS, true, 'Message scheduled');
             }
         } catch (_: any) {
-            console.log(_);
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
     }
