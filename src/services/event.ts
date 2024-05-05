@@ -109,6 +109,29 @@ class EventService {
             return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
         }
     }
+
+    async getGroupInfo(req: Request) {
+        try {
+            const eventId = objectIdConverter(req.params.id);
+
+            const group = await Group.findOne({
+                events: {
+                    $in: eventId,
+                },
+            });
+
+            if (group) {
+                return new BaseResponse(RET_CODE.SUCCESS, true, RET_MSG.SUCCESS, {
+                    groupId: group._id,
+                    groupName: group.name,
+                });
+            } else {
+                return new BaseResponse(RET_CODE.BAD_REQUEST, false, 'Group not found');
+            }
+        } catch (_: any) {
+            return new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        }
+    }
 }
 
 export default new EventService();

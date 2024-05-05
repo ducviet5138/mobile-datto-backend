@@ -202,4 +202,16 @@ router.post('/:id/memories', async (req: Request, res: Response) => {
     }
 });
 
+// GET /api/events/:id/group-info
+// Desc: Get group information
+router.get('/:id/group-info', async (req: Request, res: Response) => {
+    try {
+        const response = await EventService.getGroupInfo(req);
+        res.json(response.getResponse());
+    } catch (_: any) {
+        const response = new BaseResponse(RET_CODE.ERROR, false, RET_MSG.ERROR);
+        res.json(response.getResponse());
+    }
+});
+
 export default router;
